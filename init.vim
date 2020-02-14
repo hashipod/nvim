@@ -119,9 +119,9 @@ let g:airline_skip_empty_sections = 1
 
 
 let g:fzf_layout = { 'down': '~40%'  }
-map <silent> <expr> <C-g> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":CFiles\<cr>"
-map <silent> <expr> <C-p> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
-map <silent> <expr> <C-j> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Buffers\<cr>"
+map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":CFiles\<cr>"
+map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
+map <silent> <expr> <C-j> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Buffers\<cr>"
 function! CleanFiles(query, fullscreen)
   let command_fmt = 'fd --type file --follow --hidden --exclude .git --exclude node_modules --exclude vendor %s || true'
   let initial_command = printf(command_fmt, shellescape(a:query))
