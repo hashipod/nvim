@@ -74,25 +74,33 @@ call defx#custom#option('_', {
       \ 'direction': 'topleft',
       \ 'show_ignored_files': 0,
       \ 'buffer_name': '',
-      \ 'toggle': 1,
-      \ 'resume': 1
+      \ 'root_marker': ':'
       \ })
+call defx#custom#column('filename', {
+    \ 'root_marker_highlight': 'Ignore'
+    \ })
 autocmd FileType defx call s:defx_mappings()
 function! s:defx_mappings() abort
-  nnoremap <silent><buffer><expr> <Cr>     <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
-  nnoremap <silent><buffer><expr> o        <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
-  nnoremap <silent><buffer><expr> f        defx#do_action('toggle_ignored_files')     " 显示隐藏文件
-  nnoremap <silent><buffer><expr> R        defx#do_action('redraw')
+  nnoremap <silent><buffer><expr> <Cr> <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
+  nnoremap <silent><buffer><expr> o    <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
+  nnoremap <silent><buffer><expr> f    defx#do_action('toggle_ignored_files')     " 显示隐藏文件
+  nnoremap <silent><buffer><expr> R    defx#do_action('redraw')
+  nnoremap <silent><buffer><expr> c    defx#do_action('copy')
+  nnoremap <silent><buffer><expr> m    defx#do_action('move')
+  nnoremap <silent><buffer><expr> d    defx#do_action('remove')
+  nnoremap <silent><buffer><expr> p    defx#do_action('paste')
+  nnoremap <silent><buffer><expr> a    defx#do_action('new_file')
+  nnoremap <silent><buffer><expr> yy   defx#do_action('yank_path')
 endfunction
 function! s:defx_toggle_tree() abort
-    " Open current file, or toggle directory expand/collapse
     if defx#is_directory()
         return defx#do_action('open_or_close_tree')
     endif
     return defx#do_action('multi', ['drop'])
 endfunction
-nmap <silent> <Leader>n :Defx <cr>
-nmap <silent> <Leader>M :Defx `expand('%:p:h')` -search=`expand('%:p')`
+nmap <silent> <Leader>n :Defx -resume -toggle <CR>
+nmap <silent> <Leader>m :Defx <CR>
+nmap <silent> <Leader>M :Defx -resume -search=`expand('%:p')` `getcwd()` <CR>
 
 
 let g:airline_left_sep=''
@@ -464,6 +472,7 @@ colorscheme leo
 hi CursorLine           cterm=none      ctermfg=10
 hi Search               cterm=none      ctermfg=232     ctermbg=214     guifg=#000000   guibg=#a8a8a8
 hi lspReference                         ctermfg=black   ctermbg=green   guifg=black     guibg=green
+hi Whitespace ctermfg=DarkGray
 
 "------  Local Overrides  ------
 if filereadable($HOME.'/.vimrc_local')
