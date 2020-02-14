@@ -9,7 +9,7 @@ let mapleader = "\<Space>"
 " git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
 set rtp+=~/.fzf
 
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.nvim/plugged')
 
 Plug 'xolox/vim-misc'
 
