@@ -468,6 +468,7 @@ function! s:CopyToTmux()
 endfunction
 vnoremap <silent> Y :call <sid>CopyToTmux()<cr>
 
+set cursorline
 colorscheme leo
 hi CursorLine           cterm=none      ctermfg=10
 hi Search               cterm=none      ctermfg=232     ctermbg=214     guifg=#000000   guibg=#a8a8a8
