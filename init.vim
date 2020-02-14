@@ -85,11 +85,11 @@ function! s:defx_mappings() abort
   nnoremap <silent><buffer><expr> o    <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
   nnoremap <silent><buffer><expr> f    defx#do_action('toggle_ignored_files')     " 显示隐藏文件
   nnoremap <silent><buffer><expr> R    defx#do_action('redraw')
-  nnoremap <silent><buffer><expr> c    defx#do_action('copy')
-  nnoremap <silent><buffer><expr> m    defx#do_action('move')
-  nnoremap <silent><buffer><expr> d    defx#do_action('remove')
-  nnoremap <silent><buffer><expr> p    defx#do_action('paste')
-  nnoremap <silent><buffer><expr> a    defx#do_action('new_file')
+  nnoremap <silent><buffer><expr> mc    defx#do_action('copy')
+  nnoremap <silent><buffer><expr> mm    defx#do_action('move')
+  nnoremap <silent><buffer><expr> md    defx#do_action('remove')
+  nnoremap <silent><buffer><expr> mp    defx#do_action('paste')
+  nnoremap <silent><buffer><expr> ma    defx#do_action('new_file')
   nnoremap <silent><buffer><expr> yy   defx#do_action('yank_path')
 endfunction
 function! s:defx_toggle_tree() abort
