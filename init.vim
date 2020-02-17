@@ -6,27 +6,23 @@ filetype off                  " required
 syntax on
 let mapleader = "\<Space>"
 
-" git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
-set rtp+=~/.fzf
-
 call plug#begin('~/.nvim/plugged')
 
-Plug 'xolox/vim-misc'
-
 Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'  }
-
-Plug 'scrooloose/nerdcommenter'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'Konfekt/FastFold'
 Plug 'tmhedberg/SimpylFold'
 Plug 'jiangmiao/auto-pairs'
 Plug 'dyng/ctrlsf.vim'
-Plug 'junegunn/fzf.vim'
 Plug 'flazz/vim-colorschemes'
 Plug 'majutsushi/tagbar'
 Plug 'kannokanno/previm'
 Plug 'fatih/vim-go'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
+Plug 'xolox/vim-misc'
+Plug 'blueyed/vim-diminactive'
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -83,6 +79,8 @@ autocmd FileType defx call s:defx_mappings()
 function! s:defx_mappings() abort
   nnoremap <silent><buffer><expr> <Cr> <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
   nnoremap <silent><buffer><expr> o    <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
+  nnoremap <silent><buffer><expr> s    defx#do_action('multi', [['drop', 'split']])
+  nnoremap <silent><buffer><expr> v    defx#do_action('multi', [['drop', 'vsplit']])
   nnoremap <silent><buffer><expr> f    defx#do_action('toggle_ignored_files')     " 显示隐藏文件
   nnoremap <silent><buffer><expr> R    defx#do_action('redraw')
   nnoremap <silent><buffer><expr> mc    defx#do_action('copy')
@@ -470,7 +468,7 @@ vnoremap <silent> Y :call <sid>CopyToTmux()<cr>
 
 set cursorline
 colorscheme leo
-hi CursorLine           cterm=none      ctermfg=10
+hi CursorLine           cterm=none      ctermbg=234
 hi Search               cterm=none      ctermfg=232     ctermbg=214     guifg=#000000   guibg=#a8a8a8
 hi lspReference                         ctermfg=black   ctermbg=green   guifg=black     guibg=green
 hi Whitespace ctermfg=DarkGray
