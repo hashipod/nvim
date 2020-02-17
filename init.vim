@@ -22,7 +22,6 @@ Plug 'fatih/vim-go'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'xolox/vim-misc'
-Plug 'blueyed/vim-diminactive'
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
