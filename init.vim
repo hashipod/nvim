@@ -98,6 +98,14 @@ endfunction
 nmap <silent> <Leader>n :Defx -resume -toggle <CR>
 nmap <silent> <Leader>m :Defx <CR>
 nmap <silent> <Leader>M :Defx -resume -search=`expand('%:p')` `getcwd()` <CR>
+autocmd FileType defx noremap <buffer> <c-left> <nop>
+autocmd FileType defx noremap <buffer> <c-h> <nop>
+autocmd FileType defx noremap <buffer> <c-right> <nop>
+autocmd FileType defx noremap <buffer> <c-l> <nop>
+autocmd FileType defx noremap <buffer> <Leader>L <nop>
+autocmd FileType defx set cursorline
+autocmd FileType defx hi CursorLine cterm=none ctermfg=10 ctermbg=234
+
 
 
 let g:airline_left_sep=''
@@ -236,6 +244,7 @@ let g:ale_linters = {'go': ['golangci-lint', 'govet']}
 let g:ale_fixers = {'go': ['goimports', 'gofmt']}
 let g:ale_fix_on_save = 1
 let g:ale_go_gofmt_options=" -s -w "
+let g:ale_go_golangci_lint_options = " "
 
 
 let g:previm_open_cmd = 'open -a Safari'
@@ -465,9 +474,7 @@ function! s:CopyToTmux()
 endfunction
 vnoremap <silent> Y :call <sid>CopyToTmux()<cr>
 
-set cursorline
 colorscheme leo
-hi CursorLine           cterm=none      ctermbg=234
 hi Search               cterm=none      ctermfg=232     ctermbg=214     guifg=#000000   guibg=#a8a8a8
 hi lspReference                         ctermfg=black   ctermbg=green   guifg=black     guibg=green
 hi Whitespace ctermfg=DarkGray
