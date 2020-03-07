@@ -78,17 +78,22 @@ autocmd FileType defx call s:defx_mappings()
 function! s:defx_mappings() abort
   nnoremap <silent><buffer><expr> <Cr> <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
   nnoremap <silent><buffer><expr> o    <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
-  nnoremap <silent><buffer><expr> s    defx#do_action('multi', [['drop', 'split']])
-  nnoremap <silent><buffer><expr> v    defx#do_action('multi', [['drop', 'vsplit']])
-  nnoremap <silent><buffer><expr> f    defx#do_action('toggle_ignored_files')     " 显示隐藏文件
-  nnoremap <silent><buffer><expr> R    defx#do_action('redraw')
+  nnoremap <silent><buffer><expr> ss    defx#do_action('multi', [['drop', 'split']])
+  nnoremap <silent><buffer><expr> sv    defx#do_action('multi', [['drop', 'vsplit']])
+  nnoremap <silent><buffer><expr> f     defx#do_action('toggle_ignored_files')     " 显示隐藏文件
+  nnoremap <silent><buffer><expr> R     defx#do_action('redraw')
+  nnoremap <silent><buffer><expr> U     defx#do_action('cd', ['..'])
+  nnoremap <silent><buffer><expr> C     defx#do_action('cd', defx#get_candidate().action__path)
   nnoremap <silent><buffer><expr> mm    defx#do_action('rename')
   nnoremap <silent><buffer><expr> mc    defx#do_action('copy')
   nnoremap <silent><buffer><expr> mx    defx#do_action('move')
   nnoremap <silent><buffer><expr> mp    defx#do_action('paste')
   nnoremap <silent><buffer><expr> md    defx#do_action('remove')
   nnoremap <silent><buffer><expr> ma    defx#do_action('new_file')
-  nnoremap <silent><buffer><expr> yy   defx#do_action('yank_path')
+  nnoremap <silent><buffer><expr> yy    defx#do_action('yank_path')
+  nnoremap <silent><buffer><expr> >     defx#do_action('resize', defx#get_context().winwidth + 10)
+  nnoremap <silent><buffer><expr> <     defx#do_action('resize', defx#get_context().winwidth - 10)
+
 endfunction
 function! s:defx_toggle_tree() abort
     if defx#is_directory()
@@ -96,6 +101,12 @@ function! s:defx_toggle_tree() abort
     endif
     return defx#do_action('multi', ['drop'])
 endfunction
+
+function! Root(path) abort
+    return fnamemodify(a:path, ':t') . '/'
+endfunction
+call defx#custom#source('file', {'root': 'Root'})
+
 nmap <silent> <Leader>n :Defx -resume -toggle <CR>
 nmap <silent> <Leader>m :Defx <CR>
 nmap <silent> <Leader>M :Defx -resume -search=`expand('%:p')` `getcwd()` <CR>
