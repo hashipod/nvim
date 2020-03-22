@@ -118,6 +118,18 @@ autocmd FileType defx noremap <buffer> <Leader>L <nop>
 autocmd FileType defx set cursorline
 autocmd FileType defx hi CursorLine cterm=none ctermfg=10 ctermbg=234
 
+autocmd VimEnter * call s:open_defx_if_directory()
+function! s:open_defx_if_directory()
+  if !exists('g:loaded_defx')
+    echom 'Defx not installed, skipping...'
+    return
+  endif
+  if expand('%:p') =~ ""
+    Defx
+  endif
+endfunction
+
+
 
 
 let g:airline_left_sep=''
