@@ -38,12 +38,9 @@ Plug 'nathanaelkane/vim-indent-guides'
 Plug 'derekwyatt/vim-scala'
 
 Plug 'rust-lang/rust.vim'
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
-Plug 'dense-analysis/ale'
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'tpope/vim-abolish'
@@ -129,8 +126,6 @@ function! s:open_defx_if_directory()
 endfunction
 " donot want netrw plugin
 let loaded_netrwPlugin = 1
-
-
 
 
 let g:airline_left_sep=''
@@ -219,57 +214,16 @@ let g:tagbar_type_scala = {
 \ }
 
 
+let g:LanguageClient_serverCommands = {
+    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'nightly', 'rls'],
+    \ 'python': ['/usr/local/bin/pyls'],
+    \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
+    \ 'go': ['gopls'],
+    \ }
+nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <silent> <Leader>h :call LanguageClient#textDocument_hover()<CR>
 
-
-let g:lsp_text_edit_enabled = 0
-let g:lsp_highlight_references_enabled = 1
-
-if executable('rls')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'rls',
-        \ 'cmd': {server_info->['rustup', 'run', 'stable', 'rls']},
-        \ 'whitelist': ['rust'],
-        \ })
-endif
-
-if executable('gopls')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'gopls',
-        \ 'cmd': {server_info->['gopls', '-mode', 'stdio']},
-        \ 'whitelist': ['go'],
-        \ })
-    " autocmd BufWritePre *.go LspDocumentFormatSync
-endif
-if executable('metals-vim')
-   au User lsp_setup call lsp#register_server({
-      \ 'name': 'metals',
-      \ 'cmd': {server_info->['metals-vim']},
-      \ 'initialization_options': { 'rootPatterns': 'build.sbt' },
-      \ 'whitelist': [ 'scala', 'sbt' ],
-      \ })
-endif
-if executable('pyls')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'whitelist': ['python'],
-        \ })
-endif
-autocmd FileType py,python,scala,java,go,rs,rust nnoremap gd :LspDefinition<CR>
-autocmd FileType py,python,scala,java,go,rs,rust nnoremap <Leader>d :LspPeekDefinition<CR>
-autocmd FileType py,python,scala,java,go,rs,rust nnoremap <Leader>t :LspPeekTypeDefinition<CR>
-autocmd FileType py,python,scala,java,go,rs,rust nnoremap <Leader>i :LspPeekImplementation<CR>
-autocmd FileType py,python,scala,java,go,rs,rust nnoremap <Leader>h :LspHover<CR>
-autocmd FileType py,python,scala,java,go,rs,rust nnoremap <F9> :LspStopServer<CR>
-let g:lsp_diagnostics_enabled = 0
-let g:lsp_fold_enabled = 0
-
-
-let g:ale_linters = {'go': ['golangci-lint', 'govet']}
-let g:ale_fixers = {'go': ['goimports', 'gofmt']}
-let g:ale_fix_on_save = 1
-let g:ale_go_gofmt_options=" -s -w "
-let g:ale_go_golangci_lint_options = " "
+let g:deoplete#enable_at_startup = 1
 
 
 let g:previm_open_cmd = 'open -a Safari'
@@ -280,13 +234,6 @@ augroup END
 
 
 let g:multi_cursor_exit_from_insert_mode=0
-function! Multiple_cursors_before()
-  let g:ale_enabled=0
-endfunction
-function! Multiple_cursors_after()
-  let g:ale_enabled=1
-endfunction
-
 
 let g:go_fmt_autosave=0
 let g:go_def_mapping_enabled=0
