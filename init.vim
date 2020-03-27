@@ -479,6 +479,7 @@ if v:version >= 700
 endif
 
 
+:autocmd CursorMoved * silent! exe printf('match lspReference /\<%s\>/', expand('<cword>'))
 colorscheme leo
 hi Search               cterm=none      ctermfg=232     ctermbg=214     guifg=#000000   guibg=#a8a8a8
 hi lspReference                         ctermfg=black   ctermbg=green   guifg=black     guibg=green
