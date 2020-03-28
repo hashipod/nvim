@@ -225,11 +225,6 @@ nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 nnoremap <silent> <Leader>h :call LanguageClient#textDocument_hover()<CR>
 
 
-function! LspMaybeHover(is_running) abort
-  if a:is_running.result && g:LanguageClient_autoHoverAndHighlightStatus
-    call LanguageClient_textDocument_hover()
-  endif
-endfunction
 function! LspMaybeHighlight(is_running) abort
   if a:is_running.result && g:LanguageClient_autoHoverAndHighlightStatus
     call LanguageClient#textDocument_documentHighlight()
@@ -237,7 +232,6 @@ function! LspMaybeHighlight(is_running) abort
 endfunction
 augroup lsp_aucommands
   au!
-  au CursorHold * call LanguageClient#isAlive(function('LspMaybeHover'))
   au CursorMoved * call LanguageClient#isAlive(function('LspMaybeHighlight'))
 augroup END
 let g:LanguageClient_autoHoverAndHighlightStatus = 1
@@ -250,7 +244,7 @@ function! ToggleLspAutoHoverAndHilight() abort
     let g:LanguageClient_autoHoverAndHighlightStatus = 1
   end
 endfunction
-nnoremap <silent> ;tg  :call ToggleLspAutoHoverAndHilight()<CR>
+nnoremap <silent> <Leader>tg  :call ToggleLspAutoHoverAndHilight()<CR>
 
 
 let g:ale_linters = {'go': ['golangci-lint', 'govet']}
