@@ -39,6 +39,7 @@ Plug 'derekwyatt/vim-scala'
 
 Plug 'rust-lang/rust.vim'
 
+Plug 'dense-analysis/ale'
 Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
@@ -223,6 +224,42 @@ let g:LanguageClient_serverCommands = {
 nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 nnoremap <silent> <Leader>h :call LanguageClient#textDocument_hover()<CR>
 
+
+function! LspMaybeHover(is_running) abort
+  if a:is_running.result && g:LanguageClient_autoHoverAndHighlightStatus
+    call LanguageClient_textDocument_hover()
+  endif
+endfunction
+function! LspMaybeHighlight(is_running) abort
+  if a:is_running.result && g:LanguageClient_autoHoverAndHighlightStatus
+    call LanguageClient#textDocument_documentHighlight()
+  endif
+endfunction
+augroup lsp_aucommands
+  au!
+  au CursorHold * call LanguageClient#isAlive(function('LspMaybeHover'))
+  au CursorMoved * call LanguageClient#isAlive(function('LspMaybeHighlight'))
+augroup END
+let g:LanguageClient_autoHoverAndHighlightStatus = 1
+function! ToggleLspAutoHoverAndHilight() abort
+  if g:LanguageClient_autoHoverAndHighlightStatus
+    let g:LanguageClient_autoHoverAndHighlightStatus = 0
+    call LanguageClient#clearDocumentHighlight()
+    echo ""
+  else
+    let g:LanguageClient_autoHoverAndHighlightStatus = 1
+  end
+endfunction
+nnoremap <silent> ;tg  :call ToggleLspAutoHoverAndHilight()<CR>
+
+
+let g:ale_linters = {'go': ['golangci-lint', 'govet']}
+let g:ale_fixers = {'go': ['goimports', 'gofmt']}
+let g:ale_fix_on_save = 1
+let g:ale_go_gofmt_options=" -s -w "
+let g:ale_go_golangci_lint_options = " "
+
+
 let g:deoplete#enable_at_startup = 1
 
 
@@ -234,6 +271,12 @@ augroup END
 
 
 let g:multi_cursor_exit_from_insert_mode=0
+function! Multiple_cursors_before()
+  let g:ale_enabled=0
+endfunction
+function! Multiple_cursors_after()
+  let g:ale_enabled=1
+endfunction
 
 let g:go_fmt_autosave=0
 let g:go_def_mapping_enabled=0
@@ -479,11 +522,11 @@ if v:version >= 700
 endif
 
 
-:autocmd CursorMoved * silent! exe printf('match lspReference /\<%s\>/', expand('<cword>'))
 colorscheme leo
 hi Search               cterm=none      ctermfg=232     ctermbg=214     guifg=#000000   guibg=#a8a8a8
-hi lspReference                         ctermfg=black   ctermbg=green   guifg=black     guibg=green
+hi SpellCap             ctermfg=black   ctermbg=green   guifg=black     guibg=green
 hi Whitespace ctermfg=DarkGray
+
 
 "------  Local Overrides  ------
 if filereadable($HOME.'/.vimrc_local')
