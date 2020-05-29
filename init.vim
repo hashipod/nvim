@@ -40,7 +40,7 @@ Plug 'derekwyatt/vim-scala'
 Plug 'rust-lang/rust.vim'
 
 Plug 'dense-analysis/ale'
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
+Plug 'neovim/nvim-lsp'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 Plug 'dart-lang/dart-vim-plugin'
@@ -52,6 +52,30 @@ Plug 'tpope/vim-fugitive'
 Plug 'easymotion/vim-easymotion'
 
 call plug#end()
+
+
+function! CreateCenteredFloatingWindow()
+    let width = min([&columns - 4, max([80, &columns - 20])])
+    let height = min([&lines - 4, max([20, &lines - 10])])
+    let top = ((&lines - height) / 2) - 1
+    let left = (&columns - width) / 2
+    let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
+
+    let top = "╭" . repeat("─", width - 2) . "╮"
+    let mid = "│" . repeat(" ", width - 2) . "│"
+    let bot = "╰" . repeat("─", width - 2) . "╯"
+    let lines = [top] + repeat([mid], height - 2) + [bot]
+    let s:buf = nvim_create_buf(v:false, v:true)
+    call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
+    call nvim_open_win(s:buf, v:true, opts)
+    set winhl=Normal:Floating
+    let opts.row += 1
+    let opts.height -= 2
+    let opts.col += 2
+    let opts.width -= 4
+    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+    au BufWipeout <buffer> exe 'bw '.s:buf
+endfunction
 
 
 
@@ -144,7 +168,9 @@ let g:airline_section_z = '%3p%% %3l/%L:%3v'
 let g:airline_skip_empty_sections = 1
 
 
-let g:fzf_layout = { 'down': '~40%'  }
+" let g:fzf_layout = { 'down': '~40%'  }
+let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
+
 map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":CFiles\<cr>"
 map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
 map <silent> <expr> <C-j> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Buffers\<cr>"
@@ -215,38 +241,6 @@ let g:tagbar_type_scala = {
 \ }
 
 
-let g:LanguageClient_serverCommands = {
-    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'nightly', 'rls'],
-    \ 'python': ['/usr/local/bin/pyls'],
-    \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
-    \ 'go': ['gopls'],
-    \ }
-nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-nnoremap <silent> <Leader>h :call LanguageClient#textDocument_hover()<CR>
-
-
-function! LspMaybeHighlight(is_running) abort
-  if a:is_running.result && g:LanguageClient_autoHoverAndHighlightStatus
-    call LanguageClient#textDocument_documentHighlight()
-  endif
-endfunction
-augroup lsp_aucommands
-  au!
-  au CursorMoved * call LanguageClient#isAlive(function('LspMaybeHighlight'))
-augroup END
-let g:LanguageClient_autoHoverAndHighlightStatus = 1
-function! ToggleLspAutoHoverAndHilight() abort
-  if g:LanguageClient_autoHoverAndHighlightStatus
-    let g:LanguageClient_autoHoverAndHighlightStatus = 0
-    call LanguageClient#clearDocumentHighlight()
-    echo ""
-  else
-    let g:LanguageClient_autoHoverAndHighlightStatus = 1
-  end
-endfunction
-nnoremap <silent> <Leader>tg  :call ToggleLspAutoHoverAndHilight()<CR>
-
-
 let g:ale_linters = {'go': ['golangci-lint', 'govet']}
 let g:ale_fixers = {'go': ['goimports', 'gofmt']}
 let g:ale_fix_on_save = 1
@@ -264,6 +258,24 @@ augroup PrevimSettings
 augroup END
 
 
+lua << EOF
+  require'nvim_lsp'.rls.setup{}
+  require'nvim_lsp'.gopls.setup{}
+EOF
+nnoremap <silent> gd            <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> gD            <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <silent> <Leader>h     <cmd>lua vim.lsp.buf.hover()<CR>
+
+function! LspMaybeHighlight() abort
+  lua vim.lsp.util.buf_clear_references()
+  lua vim.lsp.buf.document_highlight()
+endfunction
+augroup lsp_aucommands
+  au!
+  au CursorMoved * call LspMaybeHighlight()
+augroup END
+
+
 let g:multi_cursor_exit_from_insert_mode=0
 function! Multiple_cursors_before()
   let g:ale_enabled=0
@@ -274,6 +286,7 @@ endfunction
 
 let g:go_fmt_autosave=0
 let g:go_def_mapping_enabled=0
+let g:go_doc_popup_window = 1
 
 
 let g:user_emmet_leader_key='<C-C>'
@@ -338,9 +351,6 @@ nmap S :%s//g<LEFT><LEFT>
 vnoremap <C-r> "hy:%s/<C-r>h//gc<left><left><left>
 
 map <Leader>w :w<CR>
-
-inoremap  <C-k> :
-nnoremap  <C-k> :
 
 nnoremap m <C-d>
 nnoremap , <C-u>
@@ -519,7 +529,10 @@ endif
 colorscheme leo
 hi Search               cterm=none      ctermfg=232     ctermbg=214     guifg=#000000   guibg=#a8a8a8
 hi SpellCap             ctermfg=black   ctermbg=green   guifg=black     guibg=green
-hi Whitespace ctermfg=DarkGray
+hi LspReferenceText     ctermfg=black   ctermbg=green   guifg=black     guibg=green
+" hi Pmenu                ctermfg=0       ctermbg=6
+" hi PmenuSel             ctermfg=NONE    ctermbg=24      cterm=NONE
+hi Whitespace           ctermfg=DarkGray
 
 
 "------  Local Overrides  ------
