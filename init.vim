@@ -41,6 +41,8 @@ Plug 'cakebaker/scss-syntax.vim'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'derekwyatt/vim-scala'
 
+Plug 'liuchengxu/space-vim-theme'
+
 Plug 'rust-lang/rust.vim'
 
 Plug 'dense-analysis/ale'
@@ -133,9 +135,7 @@ function! Root(path) abort
 endfunction
 call defx#custom#source('file', {'root': 'Root'})
 
-nmap <silent> <Leader>n :Defx -resume -toggle <CR>
-nmap <silent> <Leader>m :Defx <CR>
-nmap <silent> <Leader>M :Defx -resume -search=`expand('%:p')` `getcwd()` <CR>
+nmap <silent> <Leader>n :Defx -resume -toggle -search=`expand('%:p')` `getcwd()` <CR>
 autocmd FileType defx noremap <buffer> <c-left> <nop>
 autocmd FileType defx noremap <buffer> <c-h> <nop>
 autocmd FileType defx noremap <buffer> <c-right> <nop>
@@ -161,7 +161,7 @@ autocmd VimEnter * call AirlineInit()
 let g:airline_section_x = ''
 let g:airline_section_z = '%3p%% %3l/%L:%3v'
 let g:airline_skip_empty_sections = 1
-
+let g:airline_theme="wombat"
 
 map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap files\<cr>"
 map <silent> <expr> <C-j> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap buffers\<cr>"
@@ -487,7 +487,9 @@ if v:version >= 700
 endif
 
 
-colorscheme leo
+" colorscheme leo
+colorscheme space_vim_theme
+
 hi Search               cterm=none      ctermfg=232     ctermbg=214     guifg=#000000   guibg=#a8a8a8
 hi SpellCap             ctermfg=black   ctermbg=green   guifg=black     guibg=green
 hi LspReferenceText     ctermfg=black   ctermbg=green   guifg=black     guibg=green
