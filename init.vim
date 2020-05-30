@@ -201,9 +201,10 @@ let g:vista_floating_delay = 10
 let g:vista#renderer#enable_icon = 0
 let g:vista_blink = [0, 0]
 let g:vista_top_level_blink = [0, 0]
-let g:vista#renderer#ctags='kind'
+" let g:vista#renderer#ctags='kind'
 let g:vista_disable_statusline = 1
 let g:vista_echo_cursor = 0
+let g:vista_sidebar_width=50
 nnoremap <Leader>o :Vista!! <CR>
 
 
@@ -500,7 +501,7 @@ colorscheme space_vim_theme
 
 hi Search               cterm=none      ctermfg=232     ctermbg=214
 hi SpellCap             ctermfg=black   ctermbg=green
-hi LspReferenceText     ctermfg=black   ctermbg=darkgreen
+hi LspReferenceText     ctermfg=black   ctermbg=green
 hi LspDiagnosticsError  ctermfg=cyan
 hi SignColumn           ctermfg=white    ctermbg=black
 hi Whitespace           ctermfg=DarkGray
