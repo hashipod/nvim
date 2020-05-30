@@ -92,7 +92,7 @@ endfunction
 call defx#custom#option('_', {
       \ 'split': 'floating',
       \ 'show_ignored_files': 0,
-      \ 'winrow': 10,
+      \ 'winrow': 4,
       \ 'wincol': &columns / 4,
       \ 'buffer_name': '',
       \ 'root_marker': ':'
@@ -101,6 +101,13 @@ call defx#custom#column('filename', {
     \ 'root_marker_highlight': 'Ignore'
     \ })
 autocmd FileType defx call s:defx_mappings()
+
+function! s:defx_toggle_tree() abort
+    if defx#is_directory()
+        return defx#do_action('open_or_close_tree')
+    endif
+    return defx#do_action('multi', ['drop', 'quit'])
+endfunction
 function! s:defx_mappings() abort
   nnoremap <silent><buffer><expr> <Cr> <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
   nnoremap <silent><buffer><expr> o    <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
@@ -119,13 +126,6 @@ function! s:defx_mappings() abort
   nnoremap <silent><buffer><expr> yy    defx#do_action('yank_path')
   nnoremap <silent><buffer><expr> >     defx#do_action('resize', defx#get_context().winwidth + 10)
   nnoremap <silent><buffer><expr> <     defx#do_action('resize', defx#get_context().winwidth - 10)
-
-endfunction
-function! s:defx_toggle_tree() abort
-    if defx#is_directory()
-        return defx#do_action('open_or_close_tree')
-    endif
-    return defx#do_action('multi', ['drop', 'quit'])
 endfunction
 
 function! Root(path) abort
@@ -141,21 +141,11 @@ autocmd FileType defx noremap <buffer> <c-h> <nop>
 autocmd FileType defx noremap <buffer> <c-right> <nop>
 autocmd FileType defx noremap <buffer> <c-l> <nop>
 autocmd FileType defx noremap <buffer> <Leader>L <nop>
+autocmd FileType defx noremap <buffer> <Esc> :Defx -toggle <CR>
 autocmd FileType defx set cursorline
 autocmd FileType defx hi CursorLine cterm=none ctermfg=10 ctermbg=234
-autocmd VimEnter * call s:open_defx_if_directory()
-function! s:open_defx_if_directory()
-    if !exists('g:loaded_defx')
-        echom 'Defx not installed, skipping...'
-        return
-    endif
-    if isdirectory(expand(printf('#%s:p', expand('<abuf>'))))
-        Defx
-    endif
-endfunction
 " donot want netrw plugin
 let loaded_netrwPlugin = 1
-nnoremap <silent><buffer><expr> <CR> defx#do_action('drop')
 
 
 let g:airline_left_sep=''
@@ -173,19 +163,10 @@ let g:airline_section_z = '%3p%% %3l/%L:%3v'
 let g:airline_skip_empty_sections = 1
 
 
-" " let g:fzf_layout = { 'down': '~40%'  }
-" let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
-" 
-" map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":CFiles\<cr>"
-" map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
-" map <silent> <expr> <C-j> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Buffers\<cr>"
-" function! CleanFiles(query, fullscreen)
-"   let command_fmt = 'fd --type file --follow --hidden --exclude .git --exclude node_modules --exclude vendor %s || true'
-"   let initial_command = printf(command_fmt, shellescape(a:query))
-"   let spec = {'options': ['--query', a:query ], 'sink': 'e' }
-"   call fzf#vim#grep(initial_command, 0, spec, a:fullscreen)
-" endfunction
-" command! -nargs=* -bang CFiles call CleanFiles(<q-args>, <bang>0)
+map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap files\<cr>"
+map <silent> <expr> <C-j> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap buffers\<cr>"
+map <silent> <expr> <C-t> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap tags\<cr>"
+map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap filer\<cr>"
 
 
 nnoremap <leader>a :CtrlSF
@@ -196,54 +177,7 @@ vnoremap <Leader>a y<ESC> :CtrlSF "<C-R>""
 let g:ctrlsf_auto_focus = { "at": "start" }
 let g:ctrlsf_search_mode = 'async'
 
-
 command! -nargs=? -complete=buffer -bang BL :call BufOnly('<args>', '<bang>')
-
-" noremap <silent> <Leader>o :TagbarToggle<CR>
-" " see https://github.com/majutsushi/tagbar/wiki#google-go
-" let g:tagbar_type_go = {
-"     \ 'ctagstype' : 'go',
-"     \ 'kinds'     : [
-"         \ 'p:package',
-"         \ 'i:imports:1',
-"         \ 'c:constants',
-"         \ 'v:variables',
-"         \ 't:types',
-"         \ 'n:interfaces',
-"         \ 'w:fields',
-"         \ 'e:embedded',
-"         \ 'm:methods',
-"         \ 'r:constructor',
-"         \ 'f:functions'
-"     \ ],
-"     \ 'sro' : '.',
-"     \ 'kind2scope' : {
-"         \ 't' : 'ctype',
-"         \ 'n' : 'ntype'
-"     \ },
-"     \ 'scope2kind' : {
-"         \ 'ctype' : 't',
-"         \ 'ntype' : 'n'
-"     \ },
-"     \ 'ctagsbin'  : 'gotags',
-"     \ 'ctagsargs' : '-sort -silent'
-" \ }
-" let g:tagbar_type_scala = {
-"     \ 'ctagstype' : 'scala',
-"     \ 'sro'       : '.',
-"     \ 'kinds'     : [
-"       \ 'p:packages',
-"       \ 'T:types:1',
-"       \ 't:traits',
-"       \ 'o:objects',
-"       \ 'O:case objects',
-"       \ 'c:classes',
-"       \ 'C:case classes',
-"       \ 'm:methods',
-"       \ 'V:values:1',
-"       \ 'v:variables:1'
-"     \ ]
-" \ }
 
 
 let g:ale_linters = {'go': ['golangci-lint', 'govet']}
@@ -261,6 +195,8 @@ augroup PrevimSettings
     autocmd!
     autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
 augroup END
+
+let g:vista_echo_cursor_strategy = 'floating_win'
 
 
 nnoremap <silent> gd            <cmd>lua vim.lsp.buf.definition()<CR>
@@ -299,7 +235,6 @@ lua << EOF
 
   nvim_lsp.rust_analyzer.setup{}
   nvim_lsp.gopls.setup({on_attach=on_attach})
-
 EOF
 
 
