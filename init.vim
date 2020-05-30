@@ -292,8 +292,9 @@ lua << EOF
 
   local nvim_lsp = require'nvim_lsp'
 
-  nvim_lsp.rls.setup{}
+  nvim_lsp.rls.setup{{on_attach=on_attach}}
   nvim_lsp.gopls.setup({on_attach=on_attach})
+
 EOF
 
 
