@@ -113,8 +113,8 @@ endfunction
 function! s:defx_mappings() abort
   nnoremap <silent><buffer><expr> <Cr> <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
   nnoremap <silent><buffer><expr> o    <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
-  nnoremap <silent><buffer><expr> ss    defx#do_action('multi', [['drop', 'split', 'quit']])
-  nnoremap <silent><buffer><expr> sv    defx#do_action('multi', [['drop', 'vsplit', 'quit']])
+  nnoremap <silent><buffer><expr> ss    defx#do_action('multi', [['drop', 'split'], 'quit'])
+  nnoremap <silent><buffer><expr> sv    defx#do_action('multi', [['drop', 'vsplit'], 'quit'])
   nnoremap <silent><buffer><expr> f     defx#do_action('toggle_ignored_files')     " 显示隐藏文件
   nnoremap <silent><buffer><expr> R     defx#do_action('redraw')
   nnoremap <silent><buffer><expr> U     defx#do_action('cd', ['..'])
@@ -197,6 +197,14 @@ augroup PrevimSettings
 augroup END
 
 let g:vista_echo_cursor_strategy = 'floating_win'
+let g:vista_floating_delay = 10
+let g:vista#renderer#enable_icon = 0
+let g:vista_blink = [0, 0]
+let g:vista_top_level_blink = [0, 0]
+let g:vista#renderer#ctags='kind'
+let g:vista_disable_statusline = 1
+let g:vista_echo_cursor = 0
+nnoremap <Leader>o :Vista!! <CR>
 
 
 nnoremap <silent> gd            <cmd>lua vim.lsp.buf.definition()<CR>
@@ -490,21 +498,23 @@ endif
 " colorscheme leo
 colorscheme space_vim_theme
 
-hi Search               cterm=none      ctermfg=232     ctermbg=214     guifg=#000000   guibg=#a8a8a8
-hi SpellCap             ctermfg=black   ctermbg=green   guifg=black     guibg=green
-hi LspReferenceText     ctermfg=black   ctermbg=green   guifg=black     guibg=green
+hi Search               cterm=none      ctermfg=232     ctermbg=214
+hi SpellCap             ctermfg=black   ctermbg=green
+hi LspReferenceText     ctermfg=black   ctermbg=darkgreen
+hi LspDiagnosticsError  ctermfg=cyan
+hi SignColumn           ctermfg=white    ctermbg=black
+hi Whitespace           ctermfg=DarkGray
 
-" hi Pmenu                ctermfg=238 ctermbg=252 guifg=#4d4d4c guibg=#d6d6d6
-" hi PmenuSel             cterm=reverse ctermfg=238 ctermbg=252 gui=reverse guifg=#4d4d4c guibg=#d6d6d6
+" hi Pmenu                ctermfg=238 ctermbg=252
+" hi PmenuSel             cterm=reverse ctermfg=238 ctermbg=252
 " hi PmenuSbar            ctermbg=248 guibg=Grey
 " hi PmenuThumb           ctermbg=0 guibg=Black
-
 " hi Pmenu                ctermfg=0       ctermbg=6
 " hi PmenuSel             ctermfg=NONE    ctermbg=24      cterm=NONE
-hi Whitespace           ctermfg=DarkGray
-hi LspDiagnosticsError  ctermfg=cyan
-hi SignColumn           ctermfg=white ctermbg=black
-
+"
+hi ActiveWindow         ctermbg=233
+hi InactiveWindow       ctermbg=235
+set winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
 
 "------  Local Overrides  ------
 if filereadable($HOME.'/.vimrc_local')
