@@ -258,10 +258,6 @@ augroup PrevimSettings
 augroup END
 
 
-lua << EOF
-  require'nvim_lsp'.rls.setup{}
-  require'nvim_lsp'.gopls.setup{}
-EOF
 nnoremap <silent> gd            <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gD            <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> <Leader>h     <cmd>lua vim.lsp.buf.hover()<CR>
@@ -274,6 +270,31 @@ augroup lsp_aucommands
   au!
   au CursorMoved * call LspMaybeHighlight()
 augroup END
+
+lua << EOF
+  do
+    local default_callback = vim.lsp.callbacks["textDocument/publishDiagnostics"]
+    local err, method, params, client_id
+    vim.lsp.callbacks["textDocument/publishDiagnostics"] = function(...)
+      err, method, params, client_id = ...
+      if vim.api.nvim_get_mode().mode ~= "i" and vim.api.nvim_get_mode().mode ~= "ic" then
+        publish_diagnostics()
+      end
+    end
+    function publish_diagnostics()
+      default_callback(err, method, params, client_id)
+    end
+  end
+
+  local on_attach = function(_, bufnr)
+    vim.api.nvim_command [[autocmd InsertLeave <buffer> lua publish_diagnostics()]]
+  end
+
+  local nvim_lsp = require'nvim_lsp'
+
+  nvim_lsp.rls.setup{}
+  nvim_lsp.gopls.setup({on_attach=on_attach})
+EOF
 
 
 let g:multi_cursor_exit_from_insert_mode=0
@@ -316,7 +337,9 @@ let g:vim_markdown_folding_disabled = 1
 let g:indent_guides_guide_size = 1
 
 
-map f <Plug>(easymotion-bd-w)
+map  f <Plug>(easymotion-bd-w)
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
 
 
 """""""""""""""""""""""""""""""""""""""
@@ -448,9 +471,6 @@ set number
 set nowrap
 set vb
 set ruler
-set statusline=%<%f\ %h%m%r%=%{FugitiveStatusline()}\ \ %-14.(%l,%c%V%)\ %P
-let g:buftabs_only_basename=1
-let g:buftabs_marker_modified = "+"
 
 set incsearch
 set ignorecase
@@ -530,9 +550,17 @@ colorscheme leo
 hi Search               cterm=none      ctermfg=232     ctermbg=214     guifg=#000000   guibg=#a8a8a8
 hi SpellCap             ctermfg=black   ctermbg=green   guifg=black     guibg=green
 hi LspReferenceText     ctermfg=black   ctermbg=green   guifg=black     guibg=green
+
+" hi Pmenu                ctermfg=238 ctermbg=252 guifg=#4d4d4c guibg=#d6d6d6
+" hi PmenuSel             cterm=reverse ctermfg=238 ctermbg=252 gui=reverse guifg=#4d4d4c guibg=#d6d6d6
+" hi PmenuSbar            ctermbg=248 guibg=Grey
+" hi PmenuThumb           ctermbg=0 guibg=Black
+
 " hi Pmenu                ctermfg=0       ctermbg=6
 " hi PmenuSel             ctermfg=NONE    ctermbg=24      cterm=NONE
 hi Whitespace           ctermfg=DarkGray
+hi LspDiagnosticsError  ctermfg=cyan
+hi SignColumn           ctermfg=white ctermbg=black
 
 
 "------  Local Overrides  ------
