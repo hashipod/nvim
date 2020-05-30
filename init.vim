@@ -9,14 +9,18 @@ let mapleader = "\<Space>"
 call plug#begin('~/.nvim/plugged')
 
 Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'  }
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+" Plug 'junegunn/fzf.vim'
 Plug 'Konfekt/FastFold'
 Plug 'tmhedberg/SimpylFold'
 Plug 'jiangmiao/auto-pairs'
 Plug 'dyng/ctrlsf.vim'
 Plug 'flazz/vim-colorschemes'
-Plug 'majutsushi/tagbar'
+
+" Plug 'majutsushi/tagbar'
+Plug 'liuchengxu/vista.vim'
+Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary!' }
+
 Plug 'kannokanno/previm'
 Plug 'fatih/vim-go'
 Plug 'tpope/vim-surround'
@@ -86,10 +90,10 @@ endfunction
 """""""""""""""""""""""""""""""""""""""
 
 call defx#custom#option('_', {
-      \ 'winwidth': 30,
-      \ 'split': 'vertical',
-      \ 'direction': 'topleft',
+      \ 'split': 'floating',
       \ 'show_ignored_files': 0,
+      \ 'winrow': 10,
+      \ 'wincol': &columns / 4,
       \ 'buffer_name': '',
       \ 'root_marker': ':'
       \ })
@@ -100,8 +104,8 @@ autocmd FileType defx call s:defx_mappings()
 function! s:defx_mappings() abort
   nnoremap <silent><buffer><expr> <Cr> <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
   nnoremap <silent><buffer><expr> o    <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
-  nnoremap <silent><buffer><expr> ss    defx#do_action('multi', [['drop', 'split']])
-  nnoremap <silent><buffer><expr> sv    defx#do_action('multi', [['drop', 'vsplit']])
+  nnoremap <silent><buffer><expr> ss    defx#do_action('multi', [['drop', 'split', 'quit']])
+  nnoremap <silent><buffer><expr> sv    defx#do_action('multi', [['drop', 'vsplit', 'quit']])
   nnoremap <silent><buffer><expr> f     defx#do_action('toggle_ignored_files')     " 显示隐藏文件
   nnoremap <silent><buffer><expr> R     defx#do_action('redraw')
   nnoremap <silent><buffer><expr> U     defx#do_action('cd', ['..'])
@@ -121,7 +125,7 @@ function! s:defx_toggle_tree() abort
     if defx#is_directory()
         return defx#do_action('open_or_close_tree')
     endif
-    return defx#do_action('multi', ['drop'])
+    return defx#do_action('multi', ['drop', 'quit'])
 endfunction
 
 function! Root(path) abort
@@ -151,6 +155,7 @@ function! s:open_defx_if_directory()
 endfunction
 " donot want netrw plugin
 let loaded_netrwPlugin = 1
+nnoremap <silent><buffer><expr> <CR> defx#do_action('drop')
 
 
 let g:airline_left_sep=''
@@ -168,19 +173,21 @@ let g:airline_section_z = '%3p%% %3l/%L:%3v'
 let g:airline_skip_empty_sections = 1
 
 
-" let g:fzf_layout = { 'down': '~40%'  }
-let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
+" " let g:fzf_layout = { 'down': '~40%'  }
+" let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
+" 
+" map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":CFiles\<cr>"
+" map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
+" map <silent> <expr> <C-j> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Buffers\<cr>"
+" function! CleanFiles(query, fullscreen)
+"   let command_fmt = 'fd --type file --follow --hidden --exclude .git --exclude node_modules --exclude vendor %s || true'
+"   let initial_command = printf(command_fmt, shellescape(a:query))
+"   let spec = {'options': ['--query', a:query ], 'sink': 'e' }
+"   call fzf#vim#grep(initial_command, 0, spec, a:fullscreen)
+" endfunction
+" command! -nargs=* -bang CFiles call CleanFiles(<q-args>, <bang>0)
 
-map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":CFiles\<cr>"
-map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
-map <silent> <expr> <C-j> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Buffers\<cr>"
-function! CleanFiles(query, fullscreen)
-  let command_fmt = 'fd --type file --follow --hidden --exclude .git --exclude node_modules --exclude vendor %s || true'
-  let initial_command = printf(command_fmt, shellescape(a:query))
-  let spec = {'options': ['--query', a:query ], 'sink': 'e' }
-  call fzf#vim#grep(initial_command, 0, spec, a:fullscreen)
-endfunction
-command! -nargs=* -bang CFiles call CleanFiles(<q-args>, <bang>0)
+
 nnoremap <leader>a :CtrlSF
 nnoremap <leader>s :CtrlSFOpen <CR>
 nnoremap <Leader>f yiw :CtrlSF "<C-R>""<CR>
@@ -192,53 +199,51 @@ let g:ctrlsf_search_mode = 'async'
 
 command! -nargs=? -complete=buffer -bang BL :call BufOnly('<args>', '<bang>')
 
-noremap <silent> <Leader>o :TagbarToggle<CR>
-
-" see https://github.com/majutsushi/tagbar/wiki#google-go
-let g:tagbar_type_go = {
-    \ 'ctagstype' : 'go',
-    \ 'kinds'     : [
-        \ 'p:package',
-        \ 'i:imports:1',
-        \ 'c:constants',
-        \ 'v:variables',
-        \ 't:types',
-        \ 'n:interfaces',
-        \ 'w:fields',
-        \ 'e:embedded',
-        \ 'm:methods',
-        \ 'r:constructor',
-        \ 'f:functions'
-    \ ],
-    \ 'sro' : '.',
-    \ 'kind2scope' : {
-        \ 't' : 'ctype',
-        \ 'n' : 'ntype'
-    \ },
-    \ 'scope2kind' : {
-        \ 'ctype' : 't',
-        \ 'ntype' : 'n'
-    \ },
-    \ 'ctagsbin'  : 'gotags',
-    \ 'ctagsargs' : '-sort -silent'
-\ }
-
-let g:tagbar_type_scala = {
-    \ 'ctagstype' : 'scala',
-    \ 'sro'       : '.',
-    \ 'kinds'     : [
-      \ 'p:packages',
-      \ 'T:types:1',
-      \ 't:traits',
-      \ 'o:objects',
-      \ 'O:case objects',
-      \ 'c:classes',
-      \ 'C:case classes',
-      \ 'm:methods',
-      \ 'V:values:1',
-      \ 'v:variables:1'
-    \ ]
-\ }
+" noremap <silent> <Leader>o :TagbarToggle<CR>
+" " see https://github.com/majutsushi/tagbar/wiki#google-go
+" let g:tagbar_type_go = {
+"     \ 'ctagstype' : 'go',
+"     \ 'kinds'     : [
+"         \ 'p:package',
+"         \ 'i:imports:1',
+"         \ 'c:constants',
+"         \ 'v:variables',
+"         \ 't:types',
+"         \ 'n:interfaces',
+"         \ 'w:fields',
+"         \ 'e:embedded',
+"         \ 'm:methods',
+"         \ 'r:constructor',
+"         \ 'f:functions'
+"     \ ],
+"     \ 'sro' : '.',
+"     \ 'kind2scope' : {
+"         \ 't' : 'ctype',
+"         \ 'n' : 'ntype'
+"     \ },
+"     \ 'scope2kind' : {
+"         \ 'ctype' : 't',
+"         \ 'ntype' : 'n'
+"     \ },
+"     \ 'ctagsbin'  : 'gotags',
+"     \ 'ctagsargs' : '-sort -silent'
+" \ }
+" let g:tagbar_type_scala = {
+"     \ 'ctagstype' : 'scala',
+"     \ 'sro'       : '.',
+"     \ 'kinds'     : [
+"       \ 'p:packages',
+"       \ 'T:types:1',
+"       \ 't:traits',
+"       \ 'o:objects',
+"       \ 'O:case objects',
+"       \ 'c:classes',
+"       \ 'C:case classes',
+"       \ 'm:methods',
+"       \ 'V:values:1',
+"       \ 'v:variables:1'
+"     \ ]
+" \ }
 
 
 let g:ale_linters = {'go': ['golangci-lint', 'govet']}
@@ -292,7 +297,7 @@ lua << EOF
 
   local nvim_lsp = require'nvim_lsp'
 
-  nvim_lsp.rls.setup{{on_attach=on_attach}}
+  nvim_lsp.rust_analyzer.setup{}
   nvim_lsp.gopls.setup({on_attach=on_attach})
 
 EOF
