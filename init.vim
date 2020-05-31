@@ -212,6 +212,7 @@ nnoremap <silent> gd            <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gD            <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> <Leader>h     <cmd>lua vim.lsp.buf.hover()<CR>
 
+
 function! LspMaybeHighlight() abort
   lua vim.lsp.util.buf_clear_references()
   lua vim.lsp.buf.document_highlight()
@@ -220,31 +221,27 @@ augroup lsp_aucommands
   au!
   au CursorMoved * call LspMaybeHighlight()
 augroup END
-
 lua << EOF
   do
     local default_callback = vim.lsp.callbacks["textDocument/publishDiagnostics"]
     local err, method, params, client_id
     vim.lsp.callbacks["textDocument/publishDiagnostics"] = function(...)
       err, method, params, client_id = ...
-      if vim.api.nvim_get_mode().mode ~= "i" and vim.api.nvim_get_mode().mode ~= "ic" then
-        publish_diagnostics()
-      end
     end
     function publish_diagnostics()
       default_callback(err, method, params, client_id)
     end
   end
+  local nvim_lsp = require'nvim_lsp'
 
   local on_attach = function(_, bufnr)
     vim.api.nvim_command [[autocmd InsertLeave <buffer> lua publish_diagnostics()]]
   end
 
-  local nvim_lsp = require'nvim_lsp'
-
-  nvim_lsp.rust_analyzer.setup{}
+  nvim_lsp.rust_analyzer.setup({on_attach=on_attach})
   nvim_lsp.gopls.setup({on_attach=on_attach})
 EOF
+nnoremap <silent> <C-k> <cmd>lua publish_diagnostics() <CR>
 
 
 let g:multi_cursor_exit_from_insert_mode=0
@@ -505,6 +502,9 @@ hi LspReferenceText     ctermfg=black   ctermbg=green
 hi LspDiagnosticsError  ctermfg=cyan
 hi SignColumn           ctermfg=white    ctermbg=black
 hi Whitespace           ctermfg=DarkGray
+
+hi multiple_cursors_cursor ctermbg=red   ctermfg=green
+hi multiple_cursors_visual ctermbg=white ctermfg=black
 
 " hi Pmenu                ctermfg=238 ctermbg=252
 " hi PmenuSel             cterm=reverse ctermfg=238 ctermbg=252
