@@ -94,13 +94,20 @@ endfunction
 call defx#custom#option('_', {
       \ 'split': 'floating',
       \ 'show_ignored_files': 0,
-      \ 'winrow': 4,
-      \ 'wincol': &columns / 4,
+      \ 'wincol': winwidth(0) / 4,
+      \ 'winwidth': winwidth(0) / 2,
+      \ 'winrow': winheight(0) / 4,
+      \ 'winheight': winheight(0) / 2,
       \ 'buffer_name': '',
       \ 'root_marker': ':'
       \ })
+call defx#custom#option('_', {
+      \ 'columns': 'mark:indent:icon:filename',
+      \ })
 call defx#custom#column('filename', {
-    \ 'root_marker_highlight': 'Ignore'
+    \ 'root_marker_highlight': 'Ignore',
+    \ 'min_width': winwidth(0) / 2,
+    \ 'max_width': winwidth(0) / 2,
     \ })
 autocmd FileType defx call s:defx_mappings()
 
@@ -285,8 +292,8 @@ let g:indent_guides_guide_size = 1
 
 
 map  f <Plug>(easymotion-bd-w)
-map  / <Plug>(easymotion-sn)
-omap / <Plug>(easymotion-tn)
+" map  / <Plug>(easymotion-sn)
+" omap / <Plug>(easymotion-tn)
 
 
 """""""""""""""""""""""""""""""""""""""
