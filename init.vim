@@ -168,7 +168,7 @@ autocmd VimEnter * call AirlineInit()
 let g:airline_section_x = ''
 let g:airline_section_z = '%3p%% %3l/%L:%3v'
 let g:airline_skip_empty_sections = 1
-let g:airline_theme="wombat"
+let g:airline_theme="powerlineish"
 
 map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap files\<cr>"
 map <silent> <expr> <C-j> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap buffers\<cr>"
@@ -519,10 +519,10 @@ hi multiple_cursors_visual ctermbg=white ctermfg=black
 " hi PmenuThumb           ctermbg=0 guibg=Black
 " hi Pmenu                ctermfg=0       ctermbg=6
 " hi PmenuSel             ctermfg=NONE    ctermbg=24      cterm=NONE
-"
-hi ActiveWindow         ctermbg=233
-hi InactiveWindow       ctermbg=235
-set winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
+
+" hi ActiveWindow         ctermbg=235
+" hi InactiveWindow       ctermbg=236
+" set winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
 
 "------  Local Overrides  ------
 if filereadable($HOME.'/.vimrc_local')
