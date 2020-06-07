@@ -91,16 +91,26 @@ endfunction
 """"""""
 """""""""""""""""""""""""""""""""""""""
 
+" call defx#custom#option('_', {
+"       \ 'split': 'floating',
+"       \ 'show_ignored_files': 0,
+"       \ 'wincol': winwidth(0) / 4,
+"       \ 'winwidth': winwidth(0) / 2,
+"       \ 'winrow': winheight(0) / 4,
+"       \ 'winheight': winheight(0) / 2,
+"       \ 'buffer_name': '',
+"       \ 'root_marker': ':'
+"       \ })
+
 call defx#custom#option('_', {
-      \ 'split': 'floating',
       \ 'show_ignored_files': 0,
-      \ 'wincol': winwidth(0) / 4,
-      \ 'winwidth': winwidth(0) / 2,
-      \ 'winrow': winheight(0) / 4,
-      \ 'winheight': winheight(0) / 2,
+      \ 'winwidth': 30,
+      \ 'split': 'vertical',
+      \ 'direction': 'topleft',
       \ 'buffer_name': '',
       \ 'root_marker': ':'
       \ })
+
 call defx#custom#option('_', {
       \ 'columns': 'mark:indent:icon:filename',
       \ })
@@ -115,13 +125,16 @@ function! s:defx_toggle_tree() abort
     if defx#is_directory()
         return defx#do_action('open_or_close_tree')
     endif
-    return defx#do_action('multi', ['drop', 'quit'])
+    " return defx#do_action('multi', ['drop', 'quit'])
+    return defx#do_action('multi', ['drop'])
 endfunction
 function! s:defx_mappings() abort
   nnoremap <silent><buffer><expr> <Cr> <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
   nnoremap <silent><buffer><expr> o    <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
-  nnoremap <silent><buffer><expr> ss    defx#do_action('multi', [['drop', 'split'], 'quit'])
-  nnoremap <silent><buffer><expr> sv    defx#do_action('multi', [['drop', 'vsplit'], 'quit'])
+  " nnoremap <silent><buffer><expr> ss    defx#do_action('multi', [['drop', 'split'], 'quit'])
+  " nnoremap <silent><buffer><expr> sv    defx#do_action('multi', [['drop', 'vsplit'], 'quit'])
+  nnoremap <silent><buffer><expr> ss    defx#do_action('multi', [['drop', 'split']])
+  nnoremap <silent><buffer><expr> sv    defx#do_action('multi', [['drop', 'vsplit']])
   nnoremap <silent><buffer><expr> f     defx#do_action('toggle_ignored_files')     " 显示隐藏文件
   nnoremap <silent><buffer><expr> R     defx#do_action('redraw')
   nnoremap <silent><buffer><expr> U     defx#do_action('cd', ['..'])
@@ -142,13 +155,14 @@ function! Root(path) abort
 endfunction
 call defx#custom#source('file', {'root': 'Root'})
 
-nmap <silent> <Leader>n :Defx -resume -toggle -search=`expand('%:p')` `getcwd()` <CR>
+nmap <silent> @ :Defx -search=`expand('%:p')` `getcwd()` <CR>
+nmap <silent> <Leader>n :Defx -resume -toggle <CR>
 autocmd FileType defx noremap <buffer> <c-left> <nop>
 autocmd FileType defx noremap <buffer> <c-h> <nop>
 autocmd FileType defx noremap <buffer> <c-right> <nop>
 autocmd FileType defx noremap <buffer> <c-l> <nop>
 autocmd FileType defx noremap <buffer> <Leader>L <nop>
-autocmd FileType defx noremap <buffer> <Esc> :Defx -toggle <CR>
+" autocmd FileType defx noremap <buffer> <Esc> :Defx -toggle <CR>
 autocmd FileType defx set cursorline
 autocmd FileType defx hi CursorLine cterm=none ctermfg=10 ctermbg=234
 " donot want netrw plugin
