@@ -190,6 +190,16 @@ map <silent> <expr> <C-t> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap t
 map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap filer\<cr>"
 
 
+let g:clap_maple_delay = 0
+let g:clap_disable_run_rooter = 0
+let g:clap_layout = { 'width': winwidth(0) * 3 / 4, 'height': winheight(0) / 2, 'row': winheight(0) / 8, 'col': winwidth(0) / 8 }
+let g:clap_theme = 'solarized_light'
+
+
+" map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":FZF\<cr>"
+" let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
+
+
 nnoremap <leader>a :CtrlSF
 nnoremap <leader>s :CtrlSFOpen <CR>
 nnoremap <Leader>f yiw :CtrlSF "<C-R>""<CR>
