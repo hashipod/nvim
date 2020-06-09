@@ -169,6 +169,7 @@ autocmd FileType defx hi CursorLine cterm=none ctermfg=10 ctermbg=234
 let loaded_netrwPlugin = 1
 
 
+
 let g:airline_left_sep=''
 let g:airline_right_sep=''
 let g:airline#extensions#tabline#enabled = 1
@@ -185,15 +186,15 @@ let g:airline_skip_empty_sections = 1
 let g:airline_theme="powerlineish"
 
 map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap files\<cr>"
-map <silent> <expr> <C-j> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap buffers\<cr>"
+map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap buffers\<cr>"
 map <silent> <expr> <C-t> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap tags\<cr>"
-map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap filer\<cr>"
+map <silent> <expr> <Leader>m (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap grep2\<cr>"
 
 
 let g:clap_maple_delay = 0
 let g:clap_disable_run_rooter = 1
 let g:clap_layout = { 'width': winwidth(0) * 3 / 4, 'height': winheight(0) / 2, 'row': winheight(0) / 8, 'col': winwidth(0) / 8 }
-let g:clap_theme = 'solarized_light'
+" let g:clap_theme = 'solarized_light'
 
 
 " map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":FZF\<cr>"
@@ -227,6 +228,8 @@ augroup PrevimSettings
     autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
 augroup END
 
+
+
 let g:vista_echo_cursor_strategy = 'floating_win'
 let g:vista_floating_delay = 10
 let g:vista#renderer#enable_icon = 0
@@ -237,6 +240,13 @@ let g:vista_disable_statusline = 1
 let g:vista_echo_cursor = 0
 let g:vista_sidebar_width=50
 nnoremap <Leader>o :Vista!! <CR>
+
+autocmd FileType vista noremap <buffer> <c-left> <nop>
+autocmd FileType vista noremap <buffer> <c-h> <nop>
+autocmd FileType vista noremap <buffer> <c-right> <nop>
+autocmd FileType vista noremap <buffer> <c-l> <nop>
+autocmd FileType vista noremap <buffer> <Leader>L <nop>
+
 
 
 nnoremap <silent> gd            <cmd>lua vim.lsp.buf.definition()<CR>
