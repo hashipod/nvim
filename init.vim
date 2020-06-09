@@ -191,7 +191,7 @@ map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap f
 
 
 let g:clap_maple_delay = 0
-let g:clap_disable_run_rooter = 0
+let g:clap_disable_run_rooter = 1
 let g:clap_layout = { 'width': winwidth(0) * 3 / 4, 'height': winheight(0) / 2, 'row': winheight(0) / 8, 'col': winwidth(0) / 8 }
 let g:clap_theme = 'solarized_light'
 
