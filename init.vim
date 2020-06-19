@@ -358,8 +358,8 @@ nmap <silent> <Leader>es :so $MYVIMRC<CR>
 nnoremap <silent> <leader>b :nohlsearch<CR>
 nnoremap <Leader>= :wincmd =<CR>
 
-nmap S :%s//g<LEFT><LEFT>
-vnoremap <C-r> "hy:%s/<C-r>h//gc<left><left><left>
+nmap S :%sno##g<LEFT><LEFT>
+vnoremap <C-r> "hy:%sno#<C-r>h##gc<left><left><left>
 
 map <Leader>w :w<CR>
 
