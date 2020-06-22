@@ -185,7 +185,7 @@ let g:airline_section_z = '%3p%% %3l/%L:%3v'
 let g:airline_skip_empty_sections = 1
 let g:airline_theme="powerlineish"
 
-map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap files\<cr>"
+map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap files ++finder=fd --type f --no-ignore\<cr>"
 map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap buffers\<cr>"
 map <silent> <expr> <C-t> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap tags\<cr>"
 map <silent> <expr> <Leader>m (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap grep2\<cr>"
@@ -208,6 +208,7 @@ vnoremap <Leader>a y<ESC> :CtrlSF "<C-R>""
 
 let g:ctrlsf_auto_focus = { "at": "start" }
 let g:ctrlsf_search_mode = 'async'
+let g:ctrlsf_extra_backend_args = {'rg': '--no-ignore'}
 
 command! -nargs=? -complete=buffer -bang BL :call BufOnly('<args>', '<bang>')
 
