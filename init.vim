@@ -544,6 +544,8 @@ hi LspReferenceText     ctermfg=black   ctermbg=green
 hi LspDiagnosticsError  ctermfg=cyan
 hi SignColumn           ctermfg=white    ctermbg=black
 hi Whitespace           ctermfg=DarkGray
+hi ALEError             cterm=underline,bold ctermfg=red
+hi ALEWarning           cterm=underline,bold ctermfg=red
 
 hi multiple_cursors_cursor ctermbg=red   ctermfg=green
 hi multiple_cursors_visual ctermbg=white ctermfg=black
