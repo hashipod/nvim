@@ -46,8 +46,10 @@ Plug 'liuchengxu/space-vim-theme'
 Plug 'rust-lang/rust.vim'
 
 Plug 'dense-analysis/ale'
+" Plug 'neomake/neomake'
 Plug 'neovim/nvim-lsp'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'nvim-lua/completion-nvim'
+Plug 'nvim-lua/diagnostic-nvim'
 
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'tpope/vim-abolish'
@@ -170,6 +172,8 @@ let loaded_netrwPlugin = 1
 
 
 
+
+
 let g:airline_left_sep=''
 let g:airline_right_sep=''
 let g:airline#extensions#tabline#enabled = 1
@@ -185,7 +189,7 @@ let g:airline_section_z = '%3p%% %3l/%L:%3v'
 let g:airline_skip_empty_sections = 1
 let g:airline_theme="powerlineish"
 
-map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap files ++finder=fd --type f --no-ignore\<cr>"
+map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore\<cr>"
 map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap buffers\<cr>"
 map <silent> <expr> <C-t> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap tags\<cr>"
 map <silent> <expr> <Leader>m (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap grep2\<cr>"
@@ -213,14 +217,16 @@ let g:ctrlsf_extra_backend_args = {'rg': '--no-ignore'}
 command! -nargs=? -complete=buffer -bang BL :call BufOnly('<args>', '<bang>')
 
 
+" autocmd BufWritePost,BufEnter * Neomake
+
 let g:ale_linters = {'go': ['golangci-lint', 'govet']}
 let g:ale_fixers = {'go': ['goimports', 'gofmt']}
+let g:ale_lint_on_text_changed = 0
 let g:ale_fix_on_save = 1
 let g:ale_go_gofmt_options=" -s -w "
 let g:ale_go_golangci_lint_options = " "
 
 
-let g:deoplete#enable_at_startup = 1
 
 
 let g:previm_open_cmd = 'open -a Safari'
@@ -264,26 +270,27 @@ augroup lsp_aucommands
   au CursorMoved * call LspMaybeHighlight()
 augroup END
 lua << EOF
-  do
-    local default_callback = vim.lsp.callbacks["textDocument/publishDiagnostics"]
-    local err, method, params, client_id
-    vim.lsp.callbacks["textDocument/publishDiagnostics"] = function(...)
-      err, method, params, client_id = ...
-    end
-    function publish_diagnostics()
-      default_callback(err, method, params, client_id)
-    end
-  end
   local nvim_lsp = require'nvim_lsp'
 
   local on_attach = function(_, bufnr)
-    vim.api.nvim_command [[autocmd InsertLeave <buffer> lua publish_diagnostics()]]
+    require'completion'.on_attach()
+    require'diagnostic'.on_attach()
   end
 
   nvim_lsp.rust_analyzer.setup({on_attach=on_attach})
   nvim_lsp.gopls.setup({on_attach=on_attach})
 EOF
-nnoremap <silent> <C-k> <cmd>lua publish_diagnostics() <CR>
+
+nnoremap <C-k> <cmd>lua vim.lsp.util.show_line_diagnostics()<CR>
+" Use <Tab> and <S-Tab> to navigate through popup menu
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" Set completeopt to have a better completion experience
+set completeopt=menuone,noinsert,noselect
+" Avoid showing message extra message when using completion
+set shortmess+=c
+
+
 
 
 let g:multi_cursor_exit_from_insert_mode=0
@@ -294,9 +301,15 @@ function! Multiple_cursors_after()
   let g:ale_enabled=1
 endfunction
 
+
 let g:go_fmt_autosave=0
 let g:go_def_mapping_enabled=0
 let g:go_doc_popup_window = 1
+let g:go_gopls_enabled = 0
+let g:go_code_completion_enabled = 0
+let g:go_diagnostics_enabled = 0
+let g:go_echo_command_info = 0
+let g:go_echo_go_info=0
 
 
 let g:user_emmet_leader_key='<C-C>'
@@ -362,7 +375,10 @@ nnoremap <Leader>= :wincmd =<CR>
 nmap S :%sno##g<LEFT><LEFT>
 vnoremap <C-r> "hy:%sno#<C-r>h##gc<left><left><left>
 
-map <Leader>w :w<CR>
+" map C-j in all modes to save buffer
+noremap  <C-j> :w<CR>
+noremap  <Leader>w :w<CR>
+noremap! <C-j> <C-\><C-N>:w<CR>
 
 nnoremap m <C-d>
 nnoremap , <C-u>
@@ -474,6 +490,7 @@ set nostartofline
 """""""""
 """""""""""""""""""""""""""""""""""""""
 
+nnoremap <F3> :set wrap!<Enter>
 
 function! ToggleMouse()
     if &mouse == 'a'
