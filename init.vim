@@ -271,10 +271,19 @@ augroup lsp_aucommands
 augroup END
 lua << EOF
   local nvim_lsp = require'nvim_lsp'
+  local completion = require'completion'
+  local diagnostic = require'diagnostic'
+
+  local orig = diagnostic.publish_diagnostics
+  diagnostic.publish_diagnostics = function(bufnr, diagnostics)
+    if vim.api.nvim_get_var("is_doing_easymotion") == 0 then
+      orig(bufnr, diagnostics)
+    end
+  end
 
   local on_attach = function(_, bufnr)
-    require'completion'.on_attach()
-    require'diagnostic'.on_attach()
+    completion.on_attach()
+    diagnostic.on_attach()
   end
 
   nvim_lsp.rust_analyzer.setup({on_attach=on_attach})
@@ -339,9 +348,17 @@ let g:vim_markdown_folding_disabled = 1
 let g:indent_guides_guide_size = 1
 
 
-map  f <Plug>(easymotion-bd-w)
+
+function! DoingEasyMotion()
+  let g:is_doing_easymotion = 1
+  let cancelled = EasyMotion#WB(0,2)
+  let g:is_doing_easymotion = 0
+endfunction
+nmap f :call DoingEasyMotion()<CR>
+
 " map  / <Plug>(easymotion-sn)
 " omap / <Plug>(easymotion-tn)
+
 
 
 """""""""""""""""""""""""""""""""""""""
