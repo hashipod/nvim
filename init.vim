@@ -276,9 +276,11 @@ lua << EOF
 
   local orig = diagnostic.publish_diagnostics
   diagnostic.publish_diagnostics = function(bufnr, diagnostics)
-    if vim.api.nvim_get_var("is_doing_easymotion") == 0 then
-      orig(bufnr, diagnostics)
+    local status, result = pcall(vim.api.nvim_get_var, "is_doing_easymotion")
+    if status == true or result == 1 then
+      return
     end
+    orig(bufnr, diagnostics)
   end
 
   local on_attach = function(_, bufnr)
