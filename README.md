@@ -28,6 +28,10 @@ nvim +PlugInstall +qall
 brew tap universal-ctags/universal-ctags
 brew install --with-jansson --HEAD universal-ctags/universal-ctags/universal-ctags
 
+# install lua lsp if needed
+
+:LspInstall sumneko_lua
+
 # plugins will be installed in ~/.nvim
 
 ```
