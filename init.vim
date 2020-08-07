@@ -193,6 +193,7 @@ map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap f
 map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap buffers\<cr>"
 map <silent> <expr> <C-t> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap tags\<cr>"
 map <silent> <expr> <Leader>m (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap grep2\<cr>"
+map <silent> <expr> <C-m> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap filer\<cr><ESC>"
 
 
 let g:clap_maple_delay = 0
@@ -400,6 +401,9 @@ noremap  <C-j> :w<CR>
 noremap  <Leader>w :w<CR>
 noremap! <C-j> <C-\><C-N>:w<CR>
 
+" map C-y in insert modes to paste
+inoremap <C-y> <C-r>"<ESC>
+
 nnoremap m <C-d>
 nnoremap , <C-u>
 nnoremap ; zz
@@ -450,6 +454,8 @@ autocmd FileType scss set iskeyword+=-
 autocmd BufNewFile,BufReadPost *.scss set shiftwidth=4 softtabstop=4 expandtab
 autocmd BufNewFile,BufReadPost *.sh set shiftwidth=4 softtabstop=4 expandtab
 autocmd BufNewFile,BufReadPost *.sls set shiftwidth=4 softtabstop=4 expandtab
+autocmd BufNewFile,BufReadPost *.lua set shiftwidth=4 softtabstop=4 expandtab
+autocmd BufNewFile,BufReadPost *.json set shiftwidth=4 softtabstop=4 expandtab
 
 
 nmap <silent>=j :%!python -m json.tool<CR>:setfiletype json<CR>
