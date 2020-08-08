@@ -189,16 +189,21 @@ let g:airline_section_z = '%3p%% %3l/%L:%3v'
 let g:airline_skip_empty_sections = 1
 let g:airline_theme="powerlineish"
 
-map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore\<cr>"
-map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap buffers\<cr>"
-map <silent> <expr> <C-t> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap tags\<cr>"
-map <silent> <expr> <Leader>m (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap grep2\<cr>"
-map <silent> <expr> <C-m> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap filer\<cr><ESC>"
+map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore<CR>"
+map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap filer<CR>"
+map <silent> <expr> <C-t> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap buffers<CR>"
+map <silent> <expr> <Leader>t (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap tags<CR>"
+map <silent> <expr> <Leader>m (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap grep2<CR>"
+autocmd FileType clap_input inoremap <silent> <buffer> <ESC>  <Esc>:<c-u>call clap#handler#exit()<CR>
 
 
 let g:clap_maple_delay = 0
+let g:clap_popup_input_delay = 0
+let g:clap_on_move_delay = 0
+let g:clap_provider_grep_delay = 0
 let g:clap_disable_run_rooter = 1
 let g:clap_layout = { 'width': winwidth(0) * 3 / 4, 'height': winheight(0) / 2, 'row': winheight(0) / 8, 'col': winwidth(0) / 8 }
+let g:clap_provider_grep_blink = [0, 0]
 " let g:clap_theme = 'solarized_light'
 
 
@@ -427,6 +432,9 @@ nnoremap td  :tabclose<CR>
 set wildmenu wildmode=full
 set wildchar=<Tab> wildcharm=<C-Z>
 noremap <C-q> <C-y>
+
+command! Jsonf :execute '%!python2 -m json.tool'
+  \ | :execute '%!python2 -c "import re,sys;sys.stdout.write(re.sub(r\"\\\u[0-9a-f]{4}\", lambda m:m.group().decode(\"unicode_escape\").encode(\"utf-8\"), sys.stdin.read()))"'
 
 
 
