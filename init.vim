@@ -32,7 +32,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'mxw/vim-jsx'
 Plug 'pangloss/vim-javascript'
-Plug 'prettier/vim-prettier'
+Plug 'prettier/vim-prettier', { 'do': 'npm install' }
 Plug 'elzr/vim-json'
 Plug 'mattn/emmet-vim'
 Plug 'schickling/vim-bufonly'
@@ -358,6 +358,9 @@ let g:indent_guides_guide_size = 1
 
 
 
+map <Leader>p <Plug>(Prettier):retab <CR>
+
+
 function! DoingEasyMotion()
   let g:is_doing_easymotion = 1
   let cancelled = EasyMotion#WB(0,2)
@@ -402,9 +405,9 @@ nmap S :%sno##g<LEFT><LEFT>
 vnoremap <C-r> "hy:%sno#<C-r>h##gc<left><left><left>
 
 " map C-j in all modes to save buffer
-noremap  <C-j> :w<CR>
+noremap  <C-j>      :w<CR>
+noremap! <C-j> <ESC>:w<CR>
 noremap  <Leader>w :w<CR>
-noremap! <C-j> <C-\><C-N>:w<CR>
 
 " map C-y in insert modes to paste
 inoremap <C-y> <C-r>"<ESC>
