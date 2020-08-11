@@ -184,10 +184,12 @@ function! AirlineInit()
     let g:airline#extensions#default#layout = ['a', 'b', 'c', 'x', 'y', 'z']
 endfunction
 autocmd VimEnter * call AirlineInit()
+let g:airline_section_b = '%{airline#extensions#branch#head()} | %{expand("%f%m")}'
+let g:airline_section_c = ''
 let g:airline_section_x = ''
 let g:airline_section_z = '%3p%% %3l/%L:%3v'
 let g:airline_skip_empty_sections = 1
-let g:airline_theme="powerlineish"
+let g:airline_theme="term"
 
 map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore<CR>"
 map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap filer<CR>"
@@ -600,6 +602,7 @@ hi SignColumn           ctermfg=white    ctermbg=black
 hi Whitespace           ctermfg=DarkGray
 hi ALEError             cterm=underline,bold ctermfg=red
 hi ALEWarning           cterm=underline,bold ctermfg=red
+hi VertSplit            ctermfg=green ctermbg=black
 
 hi multiple_cursors_cursor ctermbg=red   ctermfg=green
 hi multiple_cursors_visual ctermbg=white ctermfg=black
