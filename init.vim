@@ -8,7 +8,8 @@ let mapleader = "\<Space>"
 
 call plug#begin('~/.nvim/plugged')
 
-Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'  }
+Plug 'kyazdani42/nvim-tree.lua'
+
 " Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 " Plug 'junegunn/fzf.vim'
 Plug 'Konfekt/FastFold'
@@ -87,88 +88,72 @@ endfunction
 
 
 
-"""""""""""""""""""""""""""""""""""""""
-""""""""
-""""""""   Settings for Plugins
-""""""""
-"""""""""""""""""""""""""""""""""""""""
 
-" call defx#custom#option('_', {
-"       \ 'split': 'floating',
-"       \ 'show_ignored_files': 0,
-"       \ 'wincol': winwidth(0) / 4,
-"       \ 'winwidth': winwidth(0) / 2,
-"       \ 'winrow': winheight(0) / 4,
-"       \ 'winheight': winheight(0) / 2,
-"       \ 'buffer_name': '',
-"       \ 'root_marker': ':'
-"       \ })
+let g:lua_tree_ignore = [ '.git', 'node_modules', '.cache' ] "empty by default
+let g:lua_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DIR` or `vim`
+let g:lua_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
+let g:lua_tree_follow = 1 "0 by default, this option allows the cursor to be updated when entering a buffer
+let g:lua_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
+let g:lua_tree_hide_dotfiles = 1 "0 by default, this option hides files and folders starting with a dot `.`
+let g:lua_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
+let g:lua_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
+let g:lua_tree_tab_open = 1 "0 by default, will open the tree when entering a new tab and the tree was previously open
+let g:lua_tree_show_icons = {
+    \ 'git': 0,
+    \ 'folders': 1,
+    \ 'files': 0,
+    \}
+" You can edit keybindings be defining this variable
+" You don't have to define all keys.
+" NOTE: the 'edit' key will wrap/unwrap a folder and open a file
+let g:lua_tree_bindings = {
+    \ 'edit':            ['<CR>', 'o'],
+    \ 'edit_vsplit':     'sv',
+    \ 'edit_split':      'ss',
+    \ 'toggle_ignored':  'I',
+    \ 'toggle_dotfiles': 'f',
+    \ 'refresh':         'R',
+    \ 'preview':         '<Tab>',
+    \ 'cd':              '<C-]>',
+    \ 'create':          'a',
+    \ 'remove':          'd',
+    \ 'rename':          'r',
+    \ 'cut':             'x',
+    \ 'copy':            'c',
+    \ 'paste':           'p',
+    \ 'prev_git_item':   '[c',
+    \ 'next_git_item':   ']c',
+    \}
 
-call defx#custom#option('_', {
-      \ 'show_ignored_files': 0,
-      \ 'winwidth': 30,
-      \ 'split': 'vertical',
-      \ 'direction': 'topleft',
-      \ 'buffer_name': '',
-      \ 'root_marker': ':'
-      \ })
+let g:lua_tree_icons = {
+    \ 'default': '  ',
+    \ 'symlink': '  ',
+    \ 'git': {
+    \   'unstaged': "✗",
+    \   'staged': "✓",
+    \   'unmerged': " ",
+    \   'renamed': "➜",
+    \   'untracked': "★"
+    \   },
+    \ 'folder': {
+    \   'default': "+",
+    \   'open': "-"
+    \  }
+    \ }
+nnoremap <Leader>n :LuaTreeToggle<CR>
+nnoremap <leader>r :LuaTreeRefresh<CR>
+nnoremap @ :LuaTreeFindFile<CR>
+autocmd FileType LuaTree set cursorline
+autocmd FileType LuaTree hi CursorLine cterm=none ctermfg=10 ctermbg=234
+autocmd FileType LuaTree hi! link Directory PreProc
+" set termguicolors " this variable must be enabled for colors to be applied properly
 
-call defx#custom#option('_', {
-      \ 'columns': 'mark:indent:icon:filename',
-      \ })
-call defx#custom#column('filename', {
-    \ 'root_marker_highlight': 'Ignore',
-    \ 'min_width': winwidth(0) / 2,
-    \ 'max_width': winwidth(0) / 2,
-    \ })
-autocmd FileType defx call s:defx_mappings()
 
-function! s:defx_toggle_tree() abort
-    if defx#is_directory()
-        return defx#do_action('open_or_close_tree')
-    endif
-    " return defx#do_action('multi', ['drop', 'quit'])
-    return defx#do_action('multi', ['drop'])
-endfunction
-function! s:defx_mappings() abort
-  nnoremap <silent><buffer><expr> <Cr> <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
-  nnoremap <silent><buffer><expr> o    <SID>defx_toggle_tree()                    " 打开或者关闭文件夹，文件
-  " nnoremap <silent><buffer><expr> ss    defx#do_action('multi', [['drop', 'split'], 'quit'])
-  " nnoremap <silent><buffer><expr> sv    defx#do_action('multi', [['drop', 'vsplit'], 'quit'])
-  nnoremap <silent><buffer><expr> ss    defx#do_action('multi', [['drop', 'split']])
-  nnoremap <silent><buffer><expr> sv    defx#do_action('multi', [['drop', 'vsplit']])
-  nnoremap <silent><buffer><expr> f     defx#do_action('toggle_ignored_files')     " 显示隐藏文件
-  nnoremap <silent><buffer><expr> R     defx#do_action('redraw')
-  nnoremap <silent><buffer><expr> U     defx#do_action('cd', ['..'])
-  nnoremap <silent><buffer><expr> C     defx#do_action('cd', defx#get_candidate().action__path)
-  nnoremap <silent><buffer><expr> mm    defx#do_action('rename')
-  nnoremap <silent><buffer><expr> mc    defx#do_action('copy')
-  nnoremap <silent><buffer><expr> mx    defx#do_action('move')
-  nnoremap <silent><buffer><expr> mp    defx#do_action('paste')
-  nnoremap <silent><buffer><expr> md    defx#do_action('remove')
-  nnoremap <silent><buffer><expr> ma    defx#do_action('new_file')
-  nnoremap <silent><buffer><expr> yy    defx#do_action('yank_path')
-  nnoremap <silent><buffer><expr> >     defx#do_action('resize', defx#get_context().winwidth + 10)
-  nnoremap <silent><buffer><expr> <     defx#do_action('resize', defx#get_context().winwidth - 10)
-endfunction
 
-function! Root(path) abort
-    return fnamemodify(a:path, ':t') . '/'
-endfunction
-call defx#custom#source('file', {'root': 'Root'})
 
-nmap <silent> @ :Defx -search=`expand('%:p')` `getcwd()` <CR>
-nmap <silent> <Leader>n :Defx -resume -toggle <CR>
-autocmd FileType defx noremap <buffer> <c-left> <nop>
-autocmd FileType defx noremap <buffer> <c-h> <nop>
-autocmd FileType defx noremap <buffer> <c-right> <nop>
-autocmd FileType defx noremap <buffer> <c-l> <nop>
-autocmd FileType defx noremap <buffer> <Leader>L <nop>
-" autocmd FileType defx noremap <buffer> <Esc> :Defx -toggle <CR>
-autocmd FileType defx set cursorline
-autocmd FileType defx hi CursorLine cterm=none ctermfg=10 ctermbg=234
-" donot want netrw plugin
-let loaded_netrwPlugin = 1
+nnoremap <silent> >  :exe "vertical resize +5"<CR>
+nnoremap <silent> <  :exe "vertical resize -5"<CR>
+
 
 
 
@@ -179,7 +164,6 @@ let g:airline_right_sep=''
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = ' '
-
 function! AirlineInit()
     let g:airline#extensions#default#layout = ['a', 'b', 'c', 'x', 'y', 'z']
 endfunction
@@ -194,14 +178,15 @@ let g:airline_skip_empty_sections = 1
 " let g:airline_theme="tomorrow"
 let g:airline_theme="term"
 
-map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore<CR>"
-map <silent> <expr> <C-p> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap filer<CR>"
-map <silent> <expr> <C-t> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap buffers<CR>"
-map <silent> <expr> <Leader>t (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap tags<CR>"
-map <silent> <expr> <Leader>m (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":Clap grep2<CR>"
+
+
+
+map <silent> <expr> <C-g> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore<CR>"
+map <silent> <expr> <C-p> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap filer<CR>"
+map <silent> <expr> <C-t> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap buffers<CR>"
+map <silent> <expr> <Leader>t (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap tags<CR>"
+map <silent> <expr> <Leader>m (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap grep2<CR>"
 autocmd FileType clap_input inoremap <silent> <buffer> <ESC>  <Esc>:<c-u>call clap#handler#exit()<CR>
-
-
 let g:clap_maple_delay = 0
 let g:clap_popup_input_delay = 0
 let g:clap_on_move_delay = 0
@@ -212,23 +197,23 @@ let g:clap_provider_grep_blink = [0, 0]
 " let g:clap_theme = 'solarized_light'
 
 
-" map <silent> <expr> <C-g> (expand('%') =~ 'defx' ? "\<c-w>\<c-w>" : '').":FZF\<cr>"
+
+" map <silent> <expr> <C-g> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":FZF\<cr>"
 " let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
+
 
 
 nnoremap <leader>a :CtrlSF
 nnoremap <leader>s :CtrlSFOpen <CR>
 nnoremap <Leader>f yiw :CtrlSF "<C-R>""<CR>
 vnoremap <Leader>a y<ESC> :CtrlSF "<C-R>""
-
 let g:ctrlsf_auto_focus = { "at": "start" }
 let g:ctrlsf_search_mode = 'async'
 let g:ctrlsf_extra_backend_args = {'rg': '--no-ignore'}
-
 command! -nargs=? -complete=buffer -bang BL :call BufOnly('<args>', '<bang>')
 
 
-" autocmd BufWritePost,BufEnter * Neomake
+
 
 let g:ale_linters = {'go': ['golangci-lint', 'govet']}
 let g:ale_fixers = {'go': ['goimports', 'gofmt']}
@@ -236,7 +221,6 @@ let g:ale_lint_on_text_changed = 0
 let g:ale_fix_on_save = 1
 let g:ale_go_gofmt_options=" -s -w "
 let g:ale_go_golangci_lint_options = " "
-
 
 
 
@@ -258,7 +242,6 @@ let g:vista_disable_statusline = 1
 let g:vista_echo_cursor = 0
 let g:vista_sidebar_width=50
 nnoremap <Leader>o :Vista!! <CR>
-
 autocmd FileType vista noremap <buffer> <c-left> <nop>
 autocmd FileType vista noremap <buffer> <c-h> <nop>
 autocmd FileType vista noremap <buffer> <c-right> <nop>
@@ -270,8 +253,6 @@ autocmd FileType vista noremap <buffer> <Leader>L <nop>
 nnoremap <silent> gd            <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gD            <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> <Leader>h     <cmd>lua vim.lsp.buf.hover()<CR>
-
-
 function! LspMaybeHighlight() abort
   lua vim.lsp.util.buf_clear_references()
   lua vim.lsp.buf.document_highlight()
@@ -325,6 +306,7 @@ function! Multiple_cursors_after()
 endfunction
 
 
+
 let g:go_fmt_autosave=0
 let g:go_def_mapping_enabled=0
 let g:go_doc_popup_window = 1
@@ -341,13 +323,10 @@ let g:user_emmet_settings = {
 \      'extends' : 'jsx',
 \  },
 \}
-
-
 let g:vim_json_syntax_conceal = 0
-
 let g:jsx_ext_required = 0
-
 let g:prettier#config#tab_width = 4
+
 
 let g:rust_fold = 1
 let g:perl_fold = 1
@@ -356,8 +335,8 @@ let g:erlang_fold = 1
 let g:go_fold = 1
 let g:fastfold_fold_command_suffixes =  ['x','X','a','A']
 let g:fastfold_savehook = 0
-
 let g:vim_markdown_folding_disabled = 1
+
 
 let g:indent_guides_guide_size = 1
 
@@ -366,15 +345,13 @@ let g:indent_guides_guide_size = 1
 map <Leader>p <Plug>(Prettier):retab <CR>
 
 
+
 function! DoingEasyMotion()
   let g:is_doing_easymotion = 1
   let cancelled = EasyMotion#WB(0,2)
   let g:is_doing_easymotion = 0
 endfunction
 nmap f :call DoingEasyMotion()<CR>
-
-" map  / <Plug>(easymotion-sn)
-" omap / <Plug>(easymotion-tn)
 
 
 
@@ -399,7 +376,7 @@ map <Leader>L :set invnumber<CR>
 map <Leader>T :%s/\s\+$//<CR>
 map <Leader>U :g/^$/d<CR>
 map <Leader>R :retab<CR>
-map <Leader>; %
+map <C-m> %
 map <Leader>. :@:<CR>
 nmap <silent> <Leader>ev :e $MYVIMRC<CR>
 nmap <silent> <Leader>es :so $MYVIMRC<CR>
@@ -444,9 +421,51 @@ noremap <C-q> <C-y>
 command! Jsonf :execute '%!python2 -m json.tool'
   \ | :execute '%!python2 -c "import re,sys;sys.stdout.write(re.sub(r\"\\\u[0-9a-f]{4}\", lambda m:m.group().decode(\"unicode_escape\").encode(\"utf-8\"), sys.stdin.read()))"'
 
+
+
 inoremap <C-e> <C-o>A
 inoremap <C-a> <C-o>I
 inoremap <C-k> <C-o>D
+
+
+function! MyHighlights() abort
+	hi Search               cterm=none      ctermfg=232     ctermbg=214
+	hi SpellCap             ctermfg=black   ctermbg=green
+	hi LspReferenceText     ctermfg=black   ctermbg=green
+	hi LspDiagnosticsError  ctermfg=cyan
+	hi SignColumn           ctermfg=white    ctermbg=black
+	hi Whitespace           ctermfg=DarkGray
+	hi ALEError             cterm=underline,bold ctermfg=red
+	hi ALEWarning           cterm=underline,bold ctermfg=red
+	hi VertSplit            ctermfg=green ctermbg=black
+	
+	hi multiple_cursors_cursor ctermbg=red   ctermfg=green
+	hi multiple_cursors_visual ctermbg=white ctermfg=black
+	
+	" hi Pmenu                ctermfg=238 ctermbg=252
+	" hi PmenuSel             cterm=reverse ctermfg=238 ctermbg=252
+	" hi PmenuSbar            ctermbg=248 guibg=Grey
+	" hi PmenuThumb           ctermbg=0 guibg=Black
+	" hi Pmenu                ctermfg=0       ctermbg=6
+	" hi PmenuSel             ctermfg=NONE    ctermbg=24      cterm=NONE
+	
+	" hi ActiveWindow         ctermbg=235
+	" hi InactiveWindow       ctermbg=236
+	" set winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
+
+endfunction
+augroup MyColors
+    autocmd!
+    autocmd ColorScheme * call MyHighlights()
+augroup END
+
+" colorscheme leo
+colorscheme space_vim_theme
+
+
+
+
+
 
 """""""""""""""""""""""""""""""""""""""
 """""""""
@@ -476,7 +495,6 @@ autocmd BufNewFile,BufReadPost *.lua set shiftwidth=4 softtabstop=4 expandtab
 autocmd BufNewFile,BufReadPost *.json set shiftwidth=4 softtabstop=4 expandtab
 
 
-nmap <silent>=j :%!python -m json.tool<CR>:setfiletype json<CR>
 
 
 """""""""""""""""""""""""""""""""""""""
@@ -526,7 +544,6 @@ set ignorecase
 set smartcase
 set hlsearch
 set nostartofline
-set wrap
 
 
 """""""""""""""""""""""""""""""""""""""
@@ -596,33 +613,6 @@ if v:version >= 700
     autocmd BufEnter * call AutoRestoreWinView()
 endif
 
-
-" colorscheme leo
-colorscheme space_vim_theme
-
-hi Search               cterm=none      ctermfg=232     ctermbg=214
-hi SpellCap             ctermfg=black   ctermbg=green
-hi LspReferenceText     ctermfg=black   ctermbg=green
-hi LspDiagnosticsError  ctermfg=cyan
-hi SignColumn           ctermfg=white    ctermbg=black
-hi Whitespace           ctermfg=DarkGray
-hi ALEError             cterm=underline,bold ctermfg=red
-hi ALEWarning           cterm=underline,bold ctermfg=red
-hi VertSplit            ctermfg=green ctermbg=black
-
-hi multiple_cursors_cursor ctermbg=red   ctermfg=green
-hi multiple_cursors_visual ctermbg=white ctermfg=black
-
-" hi Pmenu                ctermfg=238 ctermbg=252
-" hi PmenuSel             cterm=reverse ctermfg=238 ctermbg=252
-" hi PmenuSbar            ctermbg=248 guibg=Grey
-" hi PmenuThumb           ctermbg=0 guibg=Black
-" hi Pmenu                ctermfg=0       ctermbg=6
-" hi PmenuSel             ctermfg=NONE    ctermbg=24      cterm=NONE
-
-" hi ActiveWindow         ctermbg=235
-" hi InactiveWindow       ctermbg=236
-" set winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
 
 "------  Local Overrides  ------
 if filereadable($HOME.'/.vimrc_local')
