@@ -424,8 +424,12 @@ command! Jsonf :execute '%!python2 -m json.tool'
 
 
 
-inoremap <C-e> <C-o>A
-inoremap <C-a> <C-o>I
+" inoremap <C-e> <C-o>A
+" inoremap <C-a> <C-o>I
+inoremap <C-e> <End>
+inoremap <C-a> <Home>
+inoremap <C-b> <Left>
+inoremap <C-f> <Right>
 inoremap <C-k> <C-o>D
 
 
