@@ -146,6 +146,7 @@ nnoremap <leader>r :LuaTreeRefresh<CR>
 nnoremap @ :LuaTreeFindFile<CR>
 autocmd FileType LuaTree set cursorline
 autocmd FileType LuaTree hi CursorLine cterm=none ctermfg=10 ctermbg=234
+autocmd FileType LuaTree hi CursorLine guifg=springgreen
 autocmd FileType LuaTree hi! link Directory PreProc
 
 
@@ -175,8 +176,7 @@ let g:airline_section_y = ''
 " let g:airline_section_z = '%3p%% %3l/%L:%3v'
 let g:airline_section_z = '%3p%%'
 let g:airline_skip_empty_sections = 1
-" let g:airline_theme="tomorrow"
-let g:airline_theme="term"
+let g:airline_theme="tomorrow"
 
 
 
@@ -450,17 +450,17 @@ function! MyHighlights() abort
 
 
     " for gui
-    hi Search                       gui=none                guifg=232         guibg=214
-    hi SpellCap                                             guifg=black       guibg=green
-    hi LspReferenceText                                     guifg=black       guibg=green
+    hi Search                                               guifg=yellow        guibg=black
+    hi SpellCap                                             guifg=black         guibg=springgreen
+    hi LspReferenceText                                     guifg=black         guibg=springgreen
     hi LspDiagnosticsError                                  guifg=cyan
     hi SignColumn                                           guifg=white
     hi Whitespace                                           guifg=DarkGray
     hi ALEError                     gui=underline,bold      guifg=red
     hi ALEWarning                   gui=underline,bold      guifg=red
-    hi VertSplit                                            guifg=green
-    hi multiple_cursors_cursor                              guifg=green       guibg=red
-    hi multiple_cursors_visual                              guifg=black       guibg=white
+    hi VertSplit                                            guifg=springgreen
+    hi multiple_cursors_cursor                              guifg=springgreen   guibg=red
+    hi multiple_cursors_visual                              guifg=black         guibg=white
 
 
     " hi Pmenu                ctermfg=238 ctermbg=252
