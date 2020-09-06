@@ -450,9 +450,9 @@ function! MyHighlights() abort
 
 
     " for gui
-    hi Search                                               guifg=yellow        guibg=black
+    hi Search                       gui=NONE                guifg=black         guibg=goldenrod2
     hi SpellCap                                             guifg=black         guibg=springgreen
-    hi LspReferenceText                                     guifg=black         guibg=springgreen
+    hi LspReferenceText                                     guifg=black         guibg=limegreen
     hi LspDiagnosticsError                                  guifg=cyan
     hi SignColumn                                           guifg=white
     hi Whitespace                                           guifg=DarkGray
