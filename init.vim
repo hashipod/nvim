@@ -49,6 +49,7 @@ Plug 'rust-lang/rust.vim'
 Plug 'dense-analysis/ale'
 " Plug 'neomake/neomake'
 Plug 'neovim/nvim-lsp'
+Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 Plug 'nvim-lua/diagnostic-nvim'
 
@@ -283,6 +284,7 @@ lua << EOF
   nvim_lsp.rust_analyzer.setup({on_attach=on_attach})
   nvim_lsp.gopls.setup({on_attach=on_attach})
   nvim_lsp.sumneko_lua.setup({on_attach=on_attach})
+  nvim_lsp.ccls.setup({on_attach=on_attach})
 EOF
 
 nnoremap <C-k> <cmd>lua vim.lsp.util.show_line_diagnostics()<CR>
