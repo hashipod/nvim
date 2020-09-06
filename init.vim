@@ -147,7 +147,6 @@ nnoremap @ :LuaTreeFindFile<CR>
 autocmd FileType LuaTree set cursorline
 autocmd FileType LuaTree hi CursorLine cterm=none ctermfg=10 ctermbg=234
 autocmd FileType LuaTree hi! link Directory PreProc
-" set termguicolors " this variable must be enabled for colors to be applied properly
 
 
 
@@ -436,29 +435,44 @@ inoremap <C-k> <C-o>D
 
 
 function! MyHighlights() abort
-	hi Search               cterm=none      ctermfg=232     ctermbg=214
-	hi SpellCap             ctermfg=black   ctermbg=green
-	hi LspReferenceText     ctermfg=black   ctermbg=green
-	hi LspDiagnosticsError  ctermfg=cyan
-	hi SignColumn           ctermfg=white    ctermbg=black
-	hi Whitespace           ctermfg=DarkGray
-	hi ALEError             cterm=underline,bold ctermfg=red
-	hi ALEWarning           cterm=underline,bold ctermfg=red
-	hi VertSplit            ctermfg=green ctermbg=black
-	
-	hi multiple_cursors_cursor ctermbg=red   ctermfg=green
-	hi multiple_cursors_visual ctermbg=white ctermfg=black
-	
-	" hi Pmenu                ctermfg=238 ctermbg=252
-	" hi PmenuSel             cterm=reverse ctermfg=238 ctermbg=252
-	" hi PmenuSbar            ctermbg=248 guibg=Grey
-	" hi PmenuThumb           ctermbg=0 guibg=Black
-	" hi Pmenu                ctermfg=0       ctermbg=6
-	" hi PmenuSel             ctermfg=NONE    ctermbg=24      cterm=NONE
-	
-	" hi ActiveWindow         ctermbg=235
-	" hi InactiveWindow       ctermbg=236
-	" set winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
+    " for term
+    hi Search                       cterm=none              ctermfg=232         ctermbg=214
+    hi SpellCap                                             ctermfg=black       ctermbg=green
+    hi LspReferenceText                                     ctermfg=black       ctermbg=green
+    hi LspDiagnosticsError                                  ctermfg=cyan
+    hi SignColumn                                           ctermfg=white       ctermbg=black
+    hi Whitespace                                           ctermfg=DarkGray
+    hi ALEError                     cterm=underline,bold    ctermfg=red
+    hi ALEWarning                   cterm=underline,bold    ctermfg=red
+    hi VertSplit                                            ctermfg=green       ctermbg=black
+    hi multiple_cursors_cursor                              ctermfg=green       ctermbg=red
+    hi multiple_cursors_visual                              ctermfg=black       ctermbg=white
+
+
+    " for gui
+    hi Search                       gui=none                guifg=232         guibg=214
+    hi SpellCap                                             guifg=black       guibg=green
+    hi LspReferenceText                                     guifg=black       guibg=green
+    hi LspDiagnosticsError                                  guifg=cyan
+    hi SignColumn                                           guifg=white
+    hi Whitespace                                           guifg=DarkGray
+    hi ALEError                     gui=underline,bold      guifg=red
+    hi ALEWarning                   gui=underline,bold      guifg=red
+    hi VertSplit                                            guifg=green
+    hi multiple_cursors_cursor                              guifg=green       guibg=red
+    hi multiple_cursors_visual                              guifg=black       guibg=white
+
+
+    " hi Pmenu                ctermfg=238 ctermbg=252
+    " hi PmenuSel             cterm=reverse ctermfg=238 ctermbg=252
+    " hi PmenuSbar            ctermbg=248 guibg=Grey
+    " hi PmenuThumb           ctermbg=0 guibg=Black
+    " hi Pmenu                ctermfg=0       ctermbg=6
+    " hi PmenuSel             ctermfg=NONE    ctermbg=24      cterm=NONE
+
+    " hi ActiveWindow         ctermbg=235
+    " hi InactiveWindow       ctermbg=236
+    " set winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
 
 endfunction
 augroup MyColors
@@ -468,6 +482,7 @@ augroup END
 
 " colorscheme leo
 colorscheme space_vim_theme
+set termguicolors
 
 
 
