@@ -219,6 +219,7 @@ let g:ale_lint_on_text_changed = 0
 let g:ale_fix_on_save = 1
 let g:ale_go_gofmt_options=" -s -w "
 let g:ale_go_golangci_lint_options = " "
+let g:ale_c_parse_makefile = 1
 
 
 
@@ -563,6 +564,9 @@ set ignorecase
 set smartcase
 set hlsearch
 set nostartofline
+
+set exrc
+set secure
 
 
 """""""""""""""""""""""""""""""""""""""
