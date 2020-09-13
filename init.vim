@@ -42,8 +42,6 @@ Plug 'cakebaker/scss-syntax.vim'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'derekwyatt/vim-scala'
 
-Plug 'liuchengxu/space-vim-theme'
-
 Plug 'rust-lang/rust.vim'
 
 Plug 'dense-analysis/ale'
@@ -447,6 +445,8 @@ function! MyHighlights() abort
     hi VertSplit                                            ctermfg=green       ctermbg=black
     hi multiple_cursors_cursor                              ctermfg=green       ctermbg=red
     hi multiple_cursors_visual                              ctermfg=black       ctermbg=white
+    hi LineNr                                                                   ctermbg=NONE
+    hi Normal                                               ctermbg=234
 
 
     " for gui
@@ -458,10 +458,11 @@ function! MyHighlights() abort
     hi Whitespace                                           guifg=DarkGray
     hi ALEError                     gui=underline,bold      guifg=red
     hi ALEWarning                   gui=underline,bold      guifg=red
-    hi VertSplit                                            guifg=springgreen
+    hi VertSplit                                            guifg=springgreen   guibg=NONE
     hi multiple_cursors_cursor                              guifg=springgreen   guibg=red
     hi multiple_cursors_visual                              guifg=black         guibg=white
-
+    hi LineNr                                                                   guibg=NONE
+    hi Normal                                                                   guibg=#1c1c1c
 
     " hi Pmenu                ctermfg=238 ctermbg=252
     " hi PmenuSel             cterm=reverse ctermfg=238 ctermbg=252
@@ -480,12 +481,8 @@ augroup MyColors
     autocmd ColorScheme * call MyHighlights()
 augroup END
 
-" colorscheme leo
-colorscheme space_vim_theme
 set termguicolors
-
-
-
+colorscheme space-vim-dark
 
 
 
