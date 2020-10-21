@@ -36,5 +36,58 @@ brew install --with-jansson --HEAD universal-ctags/universal-ctags/universal-cta
 
 ```
 
+## For cpp
+
+first install clangd
+
+```
+pacman -Sy clangd
+```
+
+clangd need `compile_commands.json` at project root,
+add this line in your CMakeLists.txt, for generating `compile_commands.json` file.
+
+```
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+```
+
+make a softlink in project root.
+```
+ln -s path/to/compile_commands.json .
+```
+
+## For cscope
+
+first install cscope & ctags
+```
+pacman -Sy cscope ctags
+```
+
+use this script to generate cscope files
+
+```bash
+#!/bin/sh
+find . -path "./.ccls-cache" -prune -o -path "./.git" -prune \
+    -o -name "*.h" -o -name "*.hh" -o -name "*.hpp" \
+    -o -name "*.c" -o -name "*.cc"  | \
+    egrep -v '.ccls-cache|.git' | sort > .cscope.files
+    
+cscope -bkq -i .cscope.files -f .cscope.out
+ctags --c++-kinds=+p --fields=+iaS --exclude=".ccls-cache/*" -R -f .tags
+```
+
+it will generate the following files:
+
+```
+.cscope.files
+.cscope.out
+.cscope.out.in
+.cscope.out.po
+.tags
+```
+you may need to ignore them in .gitignore
+
+in our vimrc, use `CTRL-\ g` to jump to definitions.
+
 Happy hacking ~
 

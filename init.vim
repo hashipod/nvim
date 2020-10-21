@@ -15,8 +15,10 @@ Plug 'kyazdani42/nvim-tree.lua'
 Plug 'Konfekt/FastFold'
 Plug 'tmhedberg/SimpylFold'
 Plug 'jiangmiao/auto-pairs'
+" Plug 'Raimondi/delimitMate'
 Plug 'dyng/ctrlsf.vim'
 Plug 'flazz/vim-colorschemes'
+Plug 'markvincze/panda-vim'
 
 " Plug 'majutsushi/tagbar'
 Plug 'liuchengxu/vista.vim'
@@ -282,7 +284,7 @@ lua << EOF
   nvim_lsp.rust_analyzer.setup({on_attach=on_attach})
   nvim_lsp.gopls.setup({on_attach=on_attach})
   nvim_lsp.sumneko_lua.setup({on_attach=on_attach})
-  nvim_lsp.ccls.setup({on_attach=on_attach})
+  nvim_lsp.clangd.setup({on_attach=on_attach})
 EOF
 
 nnoremap <C-k> <cmd>lua vim.lsp.util.show_line_diagnostics()<CR>
@@ -352,6 +354,39 @@ function! DoingEasyMotion()
   let g:is_doing_easymotion = 0
 endfunction
 nmap f :call DoingEasyMotion()<CR>
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" cscope setting
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("cscope")
+    set csprg=/usr/bin/cscope
+    set csto=1
+    set cst
+    set nocsverb
+    " add any database in current directory
+    if filereadable(".cscope.out")
+        cs add .cscope.out
+    endif
+    set csverb
+endif
+
+nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+if filereadable(".tags")
+    set tags=.tags
+else
+    set tags=tags
+endif
+
 
 
 
@@ -426,11 +461,12 @@ command! Jsonf :execute '%!python2 -m json.tool'
 
 " inoremap <C-e> <C-o>A
 " inoremap <C-a> <C-o>I
-inoremap <C-e> <End>
-inoremap <C-a> <Home>
+inoremap <C-e> <C-o>$
+inoremap <C-a> <C-o>^
 inoremap <C-b> <Left>
 inoremap <C-f> <Right>
 inoremap <C-k> <C-o>D
+inoremap <C-t> <C-o>O
 
 
 function! MyHighlights() abort
@@ -456,7 +492,7 @@ function! MyHighlights() abort
     hi LspReferenceText                                     guifg=black         guibg=limegreen
     hi LspDiagnosticsError                                  guifg=cyan
     hi SignColumn                                           guifg=white
-    hi Whitespace                                           guifg=DarkGray
+    hi Whitespace                                           guifg=DarkSlateGray
     hi ALEError                     gui=underline,bold      guifg=red
     hi ALEWarning                   gui=underline,bold      guifg=red
     hi VertSplit                                            guifg=springgreen   guibg=NONE
@@ -495,24 +531,26 @@ colorscheme space-vim-dark
 
 autocmd FileType qf wincmd J
 
+" default is expand tab
+set expandtab
 autocmd BufRead,BufNewFile *.json set filetype=json
 autocmd BufNewFile,BufRead *.webapp set filetype=json
 autocmd BufNewFile,BufRead *.jshintrc set filetype=json
 autocmd BufNewFile,BufRead *.eslintrc set filetype=json
-autocmd BufNewFile,BufReadPost *.go set shiftwidth=4 softtabstop=4
-autocmd BufNewFile,BufReadPost *.coffee set shiftwidth=2 softtabstop=2 expandtab
+autocmd BufNewFile,BufReadPost *.go set shiftwidth=4 softtabstop=4 expandtab!
+autocmd BufNewFile,BufReadPost *.coffee set shiftwidth=2 softtabstop=2
 autocmd BufNewFile,BufRead *.coffee set filetype=coffee
 autocmd BufWritePost *.coffee silent make!
 autocmd QuickFixCmdPost * nested cwindow | redraw!
-autocmd BufNewFile,BufReadPost *.js set shiftwidth=4 softtabstop=4 expandtab
+autocmd BufNewFile,BufReadPost *.js set shiftwidth=4 softtabstop=4
 autocmd BufNewFile,BufRead *.js set filetype=javascript.jsx
 autocmd BufNewFile,BufRead *.ejs set filetype=html
 autocmd FileType scss set iskeyword+=-
-autocmd BufNewFile,BufReadPost *.scss set shiftwidth=4 softtabstop=4 expandtab
-autocmd BufNewFile,BufReadPost *.sh set shiftwidth=4 softtabstop=4 expandtab
-autocmd BufNewFile,BufReadPost *.sls set shiftwidth=4 softtabstop=4 expandtab
-autocmd BufNewFile,BufReadPost *.lua set shiftwidth=4 softtabstop=4 expandtab
-autocmd BufNewFile,BufReadPost *.json set shiftwidth=4 softtabstop=4 expandtab
+autocmd BufNewFile,BufReadPost *.scss set shiftwidth=4 softtabstop=4
+autocmd BufNewFile,BufReadPost *.sh set shiftwidth=4 softtabstop=4
+autocmd BufNewFile,BufReadPost *.sls set shiftwidth=4 softtabstop=4
+autocmd BufNewFile,BufReadPost *.lua set shiftwidth=4 softtabstop=4
+autocmd BufNewFile,BufReadPost *.json set shiftwidth=4 softtabstop=4
 
 
 
