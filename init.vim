@@ -104,6 +104,7 @@ let g:lua_tree_show_icons = {
     \ 'folders': 1,
     \ 'files': 0,
     \}
+let g:lua_tree_width_allow_resize = v:true
 " You can edit keybindings be defining this variable
 " You don't have to define all keys.
 " NOTE: the 'edit' key will wrap/unwrap a folder and open a file
@@ -152,8 +153,8 @@ autocmd FileType LuaTree hi! link Directory PreProc
 
 
 
-nnoremap <silent> >  :exe "vertical resize +5"<CR>
-nnoremap <silent> <  :exe "vertical resize -5"<CR>
+nnoremap <silent> >  :exe "vertical resize +10"<CR>
+nnoremap <silent> <  :exe "vertical resize -10"<CR>
 
 
 
@@ -183,7 +184,7 @@ let g:airline_theme="tomorrow"
 
 map <silent> <expr> <C-g> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore<CR>"
 map <silent> <expr> <C-p> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap filer<CR>"
-map <silent> <expr> <C-t> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap buffers<CR>"
+map <silent> <expr> <Leader>l (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap buffers<CR>"
 map <silent> <expr> <Leader>t (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap tags<CR>"
 map <silent> <expr> <Leader>m (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap grep2<CR>"
 autocmd FileType clap_input inoremap <silent> <buffer> <ESC>  <Esc>:<c-u>call clap#handler#exit()<CR>
@@ -255,8 +256,8 @@ nnoremap <silent> gd            <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gD            <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> <Leader>h     <cmd>lua vim.lsp.buf.hover()<CR>
 function! LspMaybeHighlight() abort
-  lua vim.lsp.util.buf_clear_references()
-  lua vim.lsp.buf.document_highlight()
+  lua pcall(vim.lsp.util.buf_clear_references)
+  lua pcall(vim.lsp.buf.document_highlight)
 endfunction
 augroup lsp_aucommands
   au!
@@ -427,6 +428,8 @@ noremap  <C-j>      :w<CR>
 noremap! <C-j> <ESC>:w<CR>
 noremap  <Leader>w :w<CR>
 
+noremap <C-t> :b#<CR>
+
 " map C-y in insert modes to paste
 inoremap <C-y> <C-r>"
 
@@ -449,6 +452,7 @@ nnoremap tt  :tabedit<Space>
 nnoremap tn  :tabnext<Space>
 nnoremap tm  :tabm<Space>
 nnoremap td  :tabclose<CR>
+
 
 set wildmenu wildmode=full
 set wildchar=<Tab> wildcharm=<C-Z>
@@ -518,7 +522,9 @@ augroup MyColors
     autocmd ColorScheme * call MyHighlights()
 augroup END
 
-set termguicolors
+if has("gui_running")
+    set termguicolors
+endif
 colorscheme space-vim-dark
 
 
