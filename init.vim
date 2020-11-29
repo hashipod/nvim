@@ -522,7 +522,7 @@ augroup MyColors
     autocmd ColorScheme * call MyHighlights()
 augroup END
 
-if has("gui_running")
+if has("termguicolors")
     set termguicolors
 endif
 colorscheme space-vim-dark
