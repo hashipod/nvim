@@ -51,7 +51,6 @@ Plug 'dense-analysis/ale'
 Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
-Plug 'nvim-lua/diagnostic-nvim'
 
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'tpope/vim-abolish'
@@ -185,15 +184,9 @@ let g:airline_theme="tomorrow"
 map <silent> <expr> <C-g> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore<CR>"
 map <silent> <expr> <C-p> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap filer<CR>"
 map <silent> <expr> <Leader>l (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap buffers<CR>"
-" map <silent> <expr> <Leader>t (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap tags<CR>"
-" map <silent> <expr> <Leader>m (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap grep2<CR>"
-
-" nnoremap <Leader>t yiw    :Clap tags<CR> <C-R>"
-nnoremap <Leader>m yiw    :Clap grep2<CR> <C-R>"
-vnoremap <Leader>t y<ESC> :Clap tags<CR> <C-R>"
-vnoremap <Leader>m y<ESC> :Clap grep2<CR> <C-R>"
-
-" autocmd FileType clap_input inoremap <silent> <buffer> <ESC>  <Esc>:<c-u>call clap#handler#exit()<CR>
+map <silent> <expr> <Leader>t (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap tags<CR>"
+map <silent> <expr> <Leader>m (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap grep2<CR>"
+autocmd FileType clap_input inoremap <silent> <buffer> <ESC>  <Esc>:<c-u>call clap#handler#exit()<CR>
 let g:clap_maple_delay = 0
 let g:clap_popup_input_delay = 0
 let g:clap_on_move_delay = 0
@@ -269,29 +262,38 @@ augroup lsp_aucommands
   au!
   au CursorMoved * call LspMaybeHighlight()
 augroup END
+
 lua << EOF
-  local nvim_lsp = require'nvim_lsp'
+  local nvim_lsp = require'lspconfig'
   local completion = require'completion'
-  local diagnostic = require'diagnostic'
-
-  local orig = diagnostic.publish_diagnostics
-  diagnostic.publish_diagnostics = function(bufnr, diagnostics)
-    local status, result = pcall(vim.api.nvim_get_var, "is_doing_easymotion")
-    if status == true or result == 1 then
-      return
-    end
-    orig(bufnr, diagnostics)
-  end
-
   local on_attach = function(_, bufnr)
     completion.on_attach()
-    diagnostic.on_attach()
   end
-
   nvim_lsp.rust_analyzer.setup({on_attach=on_attach})
   nvim_lsp.gopls.setup({on_attach=on_attach})
   nvim_lsp.sumneko_lua.setup({on_attach=on_attach})
   nvim_lsp.clangd.setup({on_attach=on_attach})
+EOF
+
+lua <<EOF
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  vim.lsp.diagnostic.on_publish_diagnostics, {
+    signs = function(bufnr, client_id)
+      local ok, result = pcall(vim.api.nvim_get_var, 'is_doing_easymotion')
+      if not ok then
+        return true
+      end
+      return result == 0
+    end,
+    virtual_text = function(bufnr, client_id)
+      local ok, result = pcall(vim.api.nvim_get_var, 'is_doing_easymotion')
+      if not ok then
+        return true
+      end
+      return result == 0
+    end,
+  }
+)
 EOF
 
 nnoremap <C-k> <cmd>lua vim.lsp.util.show_line_diagnostics()<CR>
@@ -355,12 +357,16 @@ map <Leader>p <Plug>(Prettier):retab <CR>
 
 
 
+let g:is_doing_easymotion = 0
 function! DoingEasyMotion()
   let g:is_doing_easymotion = 1
   let cancelled = EasyMotion#WB(0,2)
   let g:is_doing_easymotion = 0
 endfunction
 nmap f :call DoingEasyMotion()<CR>
+
+
+
 
 
 
