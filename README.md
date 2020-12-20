@@ -3,11 +3,12 @@
 
 NeoVim configuration, use vim-plug to manage plugins.
 
-```bash
+```
 # install nvim nightly. appimage is the fastest way.
 # curl -o /usr/local/bin/nvim -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage && chmod +x /usr/local/bin/nvim
+```
 
-
+```
 # clone this repo
 mkdir -p ~/.config && cd ~/.config && git clone --depth 1 https://github.com/jieteki/nvim.git
 
@@ -23,25 +24,41 @@ python2 -m pip install --user --upgrade pynvim
 
 # start nvim and install plugins
 nvim +PlugInstall +qall
+```
 
 # install clap binary: maple, SEE https://github.com/liuchengxu/vim-clap/blob/master/INSTALL.md#download-the-prebuilt-binary-from-github-release
 :call clap#installer#download_binary()
 
+```
 # Install tools(rg, ctags)
 #
 # 1. using snapd
 # snap install ripgrep --classic
 # snap install universal-ctags --classic
 # snap install clangd --classic
+#
 # 2. or using homebrew
 # brew tap universal-ctags/universal-ctags
 # brew install --with-jansson --HEAD universal-ctags/universal-ctags/universal-ctags
+```
 
+```
 # install lua lsp if needed
-:LspInstall sumneko_lua
+# first install clang , unzip 
+# then install lua lsp
+nvim +'LspInstall sumneko_lua'
+or nvim, then :LspInstall sumneko_lua
+```
 
 # plugins will be installed in ~/.nvim
 
+## Golang
+
+install vim-go binaries
+
+```
+export GOPROXY=https://goproxy.io
+nvim +GoInstallBinaries
 ```
 
 ## For cpp
