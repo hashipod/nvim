@@ -4,6 +4,10 @@
 NeoVim configuration, use vim-plug to manage plugins.
 
 ```bash
+# install nvim nightly. appimage is the fastest way.
+# curl -o /usr/local/bin/nvim -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage && chmod +x /usr/local/bin/nvim
+
+
 # clone this repo
 mkdir -p ~/.config && cd ~/.config && git clone --depth 1 https://github.com/jieteki/nvim.git
 

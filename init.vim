@@ -185,9 +185,15 @@ let g:airline_theme="tomorrow"
 map <silent> <expr> <C-g> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore<CR>"
 map <silent> <expr> <C-p> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap filer<CR>"
 map <silent> <expr> <Leader>l (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap buffers<CR>"
-map <silent> <expr> <Leader>t (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap tags<CR>"
-map <silent> <expr> <Leader>m (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap grep2<CR>"
-autocmd FileType clap_input inoremap <silent> <buffer> <ESC>  <Esc>:<c-u>call clap#handler#exit()<CR>
+" map <silent> <expr> <Leader>t (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap tags<CR>"
+" map <silent> <expr> <Leader>m (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap grep2<CR>"
+
+" nnoremap <Leader>t yiw    :Clap tags<CR> <C-R>"
+nnoremap <Leader>m yiw    :Clap grep2<CR> <C-R>"
+vnoremap <Leader>t y<ESC> :Clap tags<CR> <C-R>"
+vnoremap <Leader>m y<ESC> :Clap grep2<CR> <C-R>"
+
+" autocmd FileType clap_input inoremap <silent> <buffer> <ESC>  <Esc>:<c-u>call clap#handler#exit()<CR>
 let g:clap_maple_delay = 0
 let g:clap_popup_input_delay = 0
 let g:clap_on_move_delay = 0
