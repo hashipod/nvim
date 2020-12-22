@@ -233,6 +233,8 @@ augroup END
 
 
 
+let g:vista_echo_cursor = 1
+let g:vista_cursor_delay = 400
 let g:vista_echo_cursor_strategy = 'floating_win'
 let g:vista_floating_delay = 10
 let g:vista#renderer#enable_icon = 0
@@ -240,7 +242,6 @@ let g:vista_blink = [0, 0]
 let g:vista_top_level_blink = [0, 0]
 " let g:vista#renderer#ctags='kind'
 let g:vista_disable_statusline = 1
-let g:vista_echo_cursor = 0
 let g:vista_sidebar_width=50
 nnoremap <Leader>o :Vista!! <CR>
 autocmd FileType vista noremap <buffer> <c-left> <nop>
@@ -285,18 +286,12 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
       end
       return result == 0
     end,
-    virtual_text = function(bufnr, client_id)
-      local ok, result = pcall(vim.api.nvim_get_var, 'is_doing_easymotion')
-      if not ok then
-        return true
-      end
-      return result == 0
-    end,
+    virtual_text = false,
   }
 )
 EOF
 
-nnoremap <C-k> <cmd>lua vim.lsp.util.show_line_diagnostics()<CR>
+nnoremap <C-k> <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 " Use <Tab> and <S-Tab> to navigate through popup menu
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
