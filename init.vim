@@ -235,14 +235,14 @@ augroup END
 
 let g:vista_echo_cursor = 1
 let g:vista_cursor_delay = 400
-let g:vista_echo_cursor_strategy = 'floating_win'
-let g:vista_floating_delay = 10
+let g:vista_echo_cursor_strategy = 'echo'
 let g:vista#renderer#enable_icon = 0
 let g:vista_blink = [0, 0]
 let g:vista_top_level_blink = [0, 0]
 " let g:vista#renderer#ctags='kind'
 let g:vista_disable_statusline = 1
-let g:vista_sidebar_width=50
+let g:vista_sidebar_width = 50
+let g:vista_enable_centering_jump = 0
 nnoremap <Leader>o :Vista!! <CR>
 autocmd FileType vista noremap <buffer> <c-left> <nop>
 autocmd FileType vista noremap <buffer> <c-h> <nop>
