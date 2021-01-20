@@ -89,25 +89,25 @@ endfunction
 
 
 
-let g:lua_tree_ignore = [ '.git', 'node_modules', '.cache' ] "empty by default
-let g:lua_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DIR` or `vim`
-let g:lua_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
-let g:lua_tree_follow = 0 "0 by default, this option allows the cursor to be updated when entering a buffer
-let g:lua_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
-let g:lua_tree_hide_dotfiles = 1 "0 by default, this option hides files and folders starting with a dot `.`
-let g:lua_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
-let g:lua_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
-let g:lua_tree_tab_open = 1 "0 by default, will open the tree when entering a new tab and the tree was previously open
-let g:lua_tree_show_icons = {
+let g:nvim_tree_ignore = [ '.git', 'node_modules', '.cache' ] "empty by default
+let g:nvim_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DIR` or `vim`
+let g:nvim_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
+let g:nvim_tree_follow = 0 "0 by default, this option allows the cursor to be updated when entering a buffer
+let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
+let g:nvim_tree_hide_dotfiles = 1 "0 by default, this option hides files and folders starting with a dot `.`
+let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
+let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
+let g:nvim_tree_tab_open = 1 "0 by default, will open the tree when entering a new tab and the tree was previously open
+let g:nvim_tree_show_icons = {
     \ 'git': 0,
     \ 'folders': 1,
     \ 'files': 0,
     \}
-let g:lua_tree_width_allow_resize = v:true
+let g:nvim_tree_width_allow_resize = v:true
 " You can edit keybindings be defining this variable
 " You don't have to define all keys.
 " NOTE: the 'edit' key will wrap/unwrap a folder and open a file
-let g:lua_tree_bindings = {
+let g:nvim_tree_bindings = {
     \ 'edit':            ['<CR>', 'o'],
     \ 'edit_vsplit':     'sv',
     \ 'edit_split':      'ss',
@@ -126,7 +126,7 @@ let g:lua_tree_bindings = {
     \ 'next_git_item':   ']c',
     \}
 
-let g:lua_tree_icons = {
+let g:nvim_tree_icons = {
     \ 'default': '  ',
     \ 'symlink': '  ',
     \ 'git': {
@@ -141,13 +141,13 @@ let g:lua_tree_icons = {
     \   'open': "-"
     \  }
     \ }
-nnoremap <Leader>n :LuaTreeToggle<CR>
-nnoremap <leader>r :LuaTreeRefresh<CR>
-nnoremap @ :LuaTreeFindFile<CR>
-autocmd FileType LuaTree set cursorline
-autocmd FileType LuaTree hi CursorLine cterm=none ctermfg=10 ctermbg=234
-autocmd FileType LuaTree hi CursorLine guifg=springgreen
-autocmd FileType LuaTree hi! link Directory PreProc
+nnoremap <Leader>n :NvimTreeToggle<CR>
+nnoremap <leader>r :NvimTreeRefresh<CR>
+nnoremap @ :NvimTreeFindFile<CR>
+autocmd FileType NvimTree set cursorline
+autocmd FileType NvimTree hi CursorLine cterm=none ctermfg=10 ctermbg=234
+autocmd FileType NvimTree hi CursorLine guifg=springgreen
+autocmd FileType NvimTree hi! link Directory PreProc
 
 
 
@@ -181,11 +181,11 @@ let g:airline_theme="tomorrow"
 
 
 
-map <silent> <expr> <C-g> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore<CR>"
-map <silent> <expr> <C-p> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap filer<CR>"
-map <silent> <expr> <Leader>l (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap buffers<CR>"
-map <silent> <expr> <Leader>t (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap tags<CR>"
-map <silent> <expr> <Leader>m (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":Clap grep2<CR>"
+map <silent> <expr> <C-g> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore<CR>"
+map <silent> <expr> <C-p> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap filer<CR>"
+map <silent> <expr> <Leader>l (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap buffers<CR>"
+map <silent> <expr> <Leader>t (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap tags<CR>"
+map <silent> <expr> <Leader>m (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap grep2<CR>"
 autocmd FileType clap_input inoremap <silent> <buffer> <ESC>  <Esc>:<c-u>call clap#handler#exit()<CR>
 let g:clap_maple_delay = 0
 let g:clap_popup_input_delay = 0
@@ -198,7 +198,7 @@ let g:clap_provider_grep_blink = [0, 0]
 
 
 
-" map <silent> <expr> <C-g> (expand('%') =~ 'LuaTree' ? "\<c-w>\<c-w>" : '').":FZF\<cr>"
+" map <silent> <expr> <C-g> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":FZF\<cr>"
 " let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
 
 
