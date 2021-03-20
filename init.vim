@@ -10,8 +10,8 @@ call plug#begin('~/.nvim/plugged')
 
 Plug 'kyazdani42/nvim-tree.lua'
 
-" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-" Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'Konfekt/FastFold'
 Plug 'tmhedberg/SimpylFold'
 Plug 'jiangmiao/auto-pairs'
@@ -22,7 +22,7 @@ Plug 'markvincze/panda-vim'
 
 " Plug 'majutsushi/tagbar'
 Plug 'liuchengxu/vista.vim'
-Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary!' }
+" Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary!' }
 
 Plug 'kannokanno/previm'
 Plug 'fatih/vim-go'
@@ -181,25 +181,28 @@ let g:airline_theme="tomorrow"
 
 
 
-map <silent> <expr> <C-g> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore<CR>"
-map <silent> <expr> <C-p> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap filer<CR>"
-map <silent> <expr> <Leader>l (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap buffers<CR>"
-map <silent> <expr> <Leader>t (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap tags<CR>"
-map <silent> <expr> <Leader>m (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap grep2<CR>"
-autocmd FileType clap_input inoremap <silent> <buffer> <ESC>  <Esc>:<c-u>call clap#handler#exit()<CR>
-let g:clap_maple_delay = 0
-let g:clap_popup_input_delay = 0
-let g:clap_on_move_delay = 0
-let g:clap_provider_grep_delay = 0
-let g:clap_disable_run_rooter = 1
-let g:clap_layout = { 'width': winwidth(0) * 3 / 4, 'height': winheight(0) / 2, 'row': winheight(0) / 8, 'col': winwidth(0) / 8 }
-let g:clap_provider_grep_blink = [0, 0]
-" let g:clap_theme = 'solarized_light'
+"   map <silent> <expr> <C-g> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore<CR>"
+"   map <silent> <expr> <C-p> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap filer<CR>"
+"   map <silent> <expr> <Leader>l (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap buffers<CR>"
+"   map <silent> <expr> <Leader>t (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap tags<CR>"
+"   map <silent> <expr> <Leader>m (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap grep2<CR>"
+"   autocmd FileType clap_input inoremap <silent> <buffer> <ESC>  <Esc>:<c-u>call clap#handler#exit()<CR>
+"   let g:clap_maple_delay = 0
+"   let g:clap_popup_input_delay = 0
+"   let g:clap_on_move_delay = 0
+"   let g:clap_provider_grep_delay = 0
+"   let g:clap_disable_run_rooter = 1
+"   let g:clap_layout = { 'width': winwidth(0) * 3 / 4, 'height': winheight(0) / 2, 'row': winheight(0) / 8, 'col': winwidth(0) / 8 }
+"   let g:clap_provider_grep_blink = [0, 0]
+"   " let g:clap_theme = 'solarized_light'
 
 
 
-" map <silent> <expr> <C-g> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":FZF\<cr>"
-" let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
+map <silent> <expr> <C-g> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Files<cr>"
+map <silent> <expr> <Leader>l (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Buffers<CR>"
+map <silent> <expr> <Leader>t (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":BTags<CR>"
+map <silent> <expr> <Leader>m (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Rg<CR>"
+let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
 
 
 
@@ -215,7 +218,7 @@ command! -nargs=? -complete=buffer -bang BL :call BufOnly('<args>', '<bang>')
 
 
 
-let g:ale_linters = {'go': ['golangci-lint', 'govet']}
+let g:ale_linters = {'go': ['golangci-lint', 'govet'], 'java': []}
 let g:ale_lint_on_text_changed = 0
 " let g:ale_fixers = {'go': ['goimports', 'gofmt'], '*': []}
 " let g:ale_fix_on_save = 1
@@ -427,6 +430,7 @@ nmap <silent> <Leader>ev :e $MYVIMRC<CR>
 nmap <silent> <Leader>es :so $MYVIMRC<CR>
 nnoremap <silent> <leader>b :nohlsearch<CR>
 nnoremap <Leader>= :wincmd =<CR>
+nnoremap <Leader>c :let @+=expand('%:p')<CR>
 
 nmap S :%sno##g<LEFT><LEFT>
 vnoremap <C-r> "hy:%sno#<C-r>h##gc<left><left><left>
@@ -580,11 +584,13 @@ set splitright
 
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×
 set list
+set hid
 
 set number
 set nomodeline
 set viminfo='1000,f1,:1000,/1000
 set history=1000
+set scrolloff=10
 set foldmethod=syntax
 set tabstop=4
 set shiftwidth=4
