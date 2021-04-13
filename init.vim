@@ -46,11 +46,11 @@ Plug 'derekwyatt/vim-scala'
 
 Plug 'rust-lang/rust.vim'
 
-Plug 'dense-analysis/ale'
-" Plug 'neomake/neomake'
-Plug 'neovim/nvim-lsp'
-Plug 'neovim/nvim-lspconfig'
-Plug 'nvim-lua/completion-nvim'
+" Plug 'dense-analysis/ale'
+" Plug 'neovim/nvim-lsp'
+" Plug 'neovim/nvim-lspconfig'
+" Plug 'nvim-lua/completion-nvim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'tpope/vim-abolish'
@@ -104,27 +104,6 @@ let g:nvim_tree_show_icons = {
     \ 'files': 0,
     \}
 let g:nvim_tree_width_allow_resize = v:true
-" You can edit keybindings be defining this variable
-" You don't have to define all keys.
-" NOTE: the 'edit' key will wrap/unwrap a folder and open a file
-let g:nvim_tree_bindings = {
-    \ 'edit':            ['<CR>', 'o'],
-    \ 'edit_vsplit':     'sv',
-    \ 'edit_split':      'ss',
-    \ 'toggle_ignored':  'I',
-    \ 'toggle_dotfiles': 'f',
-    \ 'refresh':         'R',
-    \ 'preview':         '<Tab>',
-    \ 'cd':              '<C-]>',
-    \ 'create':          'a',
-    \ 'remove':          'd',
-    \ 'rename':          'r',
-    \ 'cut':             'x',
-    \ 'copy':            'c',
-    \ 'paste':           'p',
-    \ 'prev_git_item':   '[c',
-    \ 'next_git_item':   ']c',
-    \}
 
 let g:nvim_tree_icons = {
     \ 'default': '  ',
@@ -148,14 +127,43 @@ autocmd FileType NvimTree set cursorline
 autocmd FileType NvimTree hi CursorLine cterm=none ctermfg=10 ctermbg=234
 autocmd FileType NvimTree hi CursorLine guifg=springgreen
 autocmd FileType NvimTree hi! link Directory PreProc
+lua <<EOF
+    local tree_cb = require'nvim-tree.config'.nvim_tree_callback
+    vim.g.nvim_tree_bindings = {
+      ["sv"]             = tree_cb("vsplit"),
+      ["ss"]             = tree_cb("split"),
+      ["[p"]              = tree_cb("prev_sibling"),
+      ["]n"]              = tree_cb("next_sibling"),
+      -- default mappings
+      ["<CR>"]           = tree_cb("edit"),
+      ["o"]              = tree_cb("edit"),
+      ["<C-]>"]          = tree_cb("cd"),
+      ["<C-t>"]          = tree_cb("tabnew"),
+      ["<BS>"]           = tree_cb("close_node"),
+      ["<S-CR>"]         = tree_cb("close_node"),
+      ["<Tab>"]          = tree_cb("preview"),
+      ["I"]              = tree_cb("toggle_ignored"),
+      ["f"]              = tree_cb("toggle_dotfiles"),
+      ["R"]              = tree_cb("refresh"),
+      ["a"]              = tree_cb("create"),
+      ["d"]              = tree_cb("remove"),
+      ["r"]              = tree_cb("rename"),
+      ["<C-r>"]          = tree_cb("full_rename"),
+      ["x"]              = tree_cb("cut"),
+      ["c"]              = tree_cb("copy"),
+      ["p"]              = tree_cb("paste"),
+      ["[c"]             = tree_cb("prev_git_item"),
+      ["]c"]             = tree_cb("next_git_item"),
+      ["-"]              = tree_cb("dir_up"),
+      ["q"]              = tree_cb("close"),
+    }
+EOF
 
 
 
 
 nnoremap <silent> >  :exe "vertical resize +10"<CR>
 nnoremap <silent> <  :exe "vertical resize -10"<CR>
-
-
 
 
 
@@ -179,7 +187,7 @@ let g:airline_skip_empty_sections = 1
 let g:airline_theme="tomorrow"
 
 
-
+    
 
 "   map <silent> <expr> <C-g> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore<CR>"
 "   map <silent> <expr> <C-p> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap filer<CR>"
@@ -218,13 +226,13 @@ command! -nargs=? -complete=buffer -bang BL :call BufOnly('<args>', '<bang>')
 
 
 
-let g:ale_linters = {'go': ['golangci-lint', 'govet'], 'java': []}
-let g:ale_lint_on_text_changed = 0
-" let g:ale_fixers = {'go': ['goimports', 'gofmt'], '*': []}
-" let g:ale_fix_on_save = 1
-let g:ale_go_gofmt_options=" -s -w "
-let g:ale_go_golangci_lint_options = " "
-let g:ale_c_parse_makefile = 1
+"         let g:ale_linters = {'go': ['golangci-lint', 'govet'], 'java': []}
+"         let g:ale_lint_on_text_changed = 0
+"         " let g:ale_fixers = {'go': ['goimports', 'gofmt'], '*': []}
+"         " let g:ale_fix_on_save = 1
+"         let g:ale_go_gofmt_options=" -s -w "
+"         let g:ale_go_golangci_lint_options = " "
+"         let g:ale_c_parse_makefile = 1
 
 
 
@@ -255,64 +263,186 @@ autocmd FileType vista noremap <buffer> <Leader>L <nop>
 
 
 
-nnoremap <silent> gd            <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> gD            <cmd>lua vim.lsp.buf.implementation()<CR>
-nnoremap <silent> <Leader>h     <cmd>lua vim.lsp.buf.hover()<CR>
-function! LspMaybeHighlight() abort
-  lua pcall(vim.lsp.util.buf_clear_references)
-  lua pcall(vim.lsp.buf.document_highlight)
+"    nnoremap <silent> gd            <cmd>lua vim.lsp.buf.definition()<CR>
+"    nnoremap <silent> gD            <cmd>lua vim.lsp.buf.implementation()<CR>
+"    nnoremap <silent> <Leader>h     <cmd>lua vim.lsp.buf.hover()<CR>
+"    function! LspMaybeHighlight() abort
+"      lua pcall(vim.lsp.util.buf_clear_references)
+"      lua pcall(vim.lsp.buf.document_highlight)
+"    endfunction
+"    augroup lsp_aucommands
+"      au!
+"      au CursorMoved * call LspMaybeHighlight()
+"    augroup END
+"    
+"    lua << EOF
+"      local nvim_lsp = require'lspconfig'
+"      local completion = require'completion'
+"      local on_attach = function(_, bufnr)
+"        completion.on_attach()
+"      end
+"      nvim_lsp.rust_analyzer.setup({on_attach=on_attach})
+"      nvim_lsp.gopls.setup({on_attach=on_attach})
+"      nvim_lsp.sumneko_lua.setup({on_attach=on_attach})
+"      nvim_lsp.clangd.setup({on_attach=on_attach})
+"    EOF
+"    
+"    lua <<EOF
+"    vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+"      vim.lsp.diagnostic.on_publish_diagnostics, {
+"        signs = function(bufnr, client_id)
+"          local ok, result = pcall(vim.api.nvim_get_var, 'is_doing_easymotion')
+"          if not ok then
+"            return true
+"          end
+"          return result == 0
+"        end,
+"        virtual_text = false,
+"      }
+"    )
+"    EOF
+"   
+"   nnoremap <C-k> <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
+"   " Use <Tab> and <S-Tab> to navigate through popup menu
+"   inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+"   inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+"   " Set completeopt to have a better completion experience
+"   set completeopt=menuone,noinsert,noselect
+"   " Avoid showing message extra message when using completion
+"   set shortmess+=c
+
+
+
+
+
+
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ?:verbose imap <tab>? to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+ \ pumvisible() ? "\<C-n>" : (<SID>check_back_space() ? "\<TAB>" : coc#refresh())
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+ let col = col('.') - 1
+ return !col || getline('.')[col - 1] =~# '\s'
 endfunction
-augroup lsp_aucommands
-  au!
-  au CursorMoved * call LspMaybeHighlight()
-augroup END
-
-lua << EOF
-  local nvim_lsp = require'lspconfig'
-  local completion = require'completion'
-  local on_attach = function(_, bufnr)
-    completion.on_attach()
-  end
-  nvim_lsp.rust_analyzer.setup({on_attach=on_attach})
-  nvim_lsp.gopls.setup({on_attach=on_attach})
-  nvim_lsp.sumneko_lua.setup({on_attach=on_attach})
-  nvim_lsp.clangd.setup({on_attach=on_attach})
-EOF
-
-lua <<EOF
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics, {
-    signs = function(bufnr, client_id)
-      local ok, result = pcall(vim.api.nvim_get_var, 'is_doing_easymotion')
-      if not ok then
-        return true
-      end
-      return result == 0
-    end,
-    virtual_text = false,
-  }
-)
-EOF
-
-nnoremap <C-k> <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
-" Use <Tab> and <S-Tab> to navigate through popup menu
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-" Set completeopt to have a better completion experience
-set completeopt=menuone,noinsert,noselect
-" Avoid showing message extra message when using completion
-set shortmess+=c
-
-
-
-
-let g:multi_cursor_exit_from_insert_mode=0
-function! Multiple_cursors_before()
-  let g:ale_enabled=0
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+" position. Coc only does snippet and additional edit on confirm.
+" <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
+if exists('*complete_info')
+ inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+ if (index(['vim','help'], &filetype) >= 0)
+ execute 'h '.expand('<cword>')
+ else
+ call CocAction('doHover')
+ endif
 endfunction
-function! Multiple_cursors_after()
-  let g:ale_enabled=1
-endfunction
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+"         " Formatting selected code.
+"         xmap <leader>f <Plug>(coc-format-selected)
+"         nmap <leader>f <Plug>(coc-format-selected)
+augroup mygroup
+ autocmd!
+ " Setup formatexpr specified filetype(s).
+ autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+ " Update signature help on jump placeholder.
+ autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+"         " Applying codeAction to the selected region.
+"         " Example: `<leader>aap` for current paragraph
+"         xmap <leader>a <Plug>(coc-codeaction-selected)
+"         nmap <leader>a <Plug>(coc-codeaction-selected)
+"         " Remap keys for applying codeAction to the current line.
+"         nmap <leader>ac <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf <Plug>(coc-fix-current)
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+" Use CTRL-S for selections ranges.
+" Requires 'textDocument/selectionRange' support of LS, ex: coc-tsserver
+nmap <silent> <C-s> <Plug>(coc-range-select)
+xmap <silent> <C-s> <Plug>(coc-range-select)
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call CocAction('fold', <f-args>)
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
+" Add (Neo)Vim's native statusline support.
+" NOTE: Please see `:h coc-status` for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline.
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+" Mappings using CoCList:
+"    " Show all diagnostics.
+"    nnoremap <silent> <space>a :<C-u>CocList diagnostics<cr>
+"    " Manage extensions.
+"    nnoremap <silent> <space>e :<C-u>CocList extensions<cr>
+"    " Show commands.
+"    nnoremap <silent> <space>c :<C-u>CocList commands<cr>
+"    " Find symbol of current document.
+"    nnoremap <silent> <space>o :<C-u>CocList outline<cr>
+"    " Search workspace symbols.
+"    nnoremap <silent> <space>s :<C-u>CocList -I symbols<cr>
+"    " Do default action for next item.
+"    nnoremap <silent> <space>j :<C-u>CocNext<CR>
+"    " Do default action for previous item.
+"    nnoremap <silent> <space>k :<C-u>CocPrev<CR>
+"    " Resume latest coc list.
+"    nnoremap <silent> <space>p :<C-u>CocListResume<CR>
+
+
+
+
+
+
+
+
+
+
+
+
+
+autocmd User EasyMotionPromptBegin silent! CocDisable
+autocmd User EasyMotionPromptEnd silent! CocEnable
+
+
+"   let g:multi_cursor_exit_from_insert_mode=0
+"   function! Multiple_cursors_before()
+"     CocDisable
+"     let g:ale_enabled=0
+"   endfunction
+"   function! Multiple_cursors_after()
+"     let g:ale_enabled=1
+"   endfunction
 
 
 
