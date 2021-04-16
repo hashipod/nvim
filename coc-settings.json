@@ -1,9 +1,24 @@
 {
-    "languageserver": {
-      "clangd": {
-        "command": "clangd",
-        "rootPatterns": ["compile_flags.txt", "compile_commands.json"],
-        "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"]
-      }
+    "explorer.keyMappings.global": {
+        "i": false,
+
+        "o": ["wait", "expanded?", "collapse", "expand"],
+        "<cr>": ["wait", "expandable?", "cd", "open"],
+
+        "ss": "open:split",
+        "sv": "open:vsplit",
+
+    "a": "addFile",
+    "A": "addDirectory",
+    "r": "rename",
+
+
+        "y": "copyFile",
+        "x": "cutFile",
+        "p": "pasteFile",
+        "d": "delete",
+        "f": "toggleHidden"
+
+
     }
 }

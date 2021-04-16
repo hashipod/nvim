@@ -15,14 +15,10 @@ Plug 'junegunn/fzf.vim'
 Plug 'Konfekt/FastFold'
 Plug 'tmhedberg/SimpylFold'
 Plug 'jiangmiao/auto-pairs'
-" Plug 'Raimondi/delimitMate'
 Plug 'dyng/ctrlsf.vim'
 Plug 'flazz/vim-colorschemes'
 Plug 'markvincze/panda-vim'
-
-" Plug 'majutsushi/tagbar'
 Plug 'liuchengxu/vista.vim'
-" Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary!' }
 
 Plug 'kannokanno/previm'
 Plug 'fatih/vim-go'
@@ -45,11 +41,6 @@ Plug 'nathanaelkane/vim-indent-guides'
 Plug 'derekwyatt/vim-scala'
 
 Plug 'rust-lang/rust.vim'
-
-" Plug 'dense-analysis/ale'
-" Plug 'neovim/nvim-lsp'
-" Plug 'neovim/nvim-lspconfig'
-" Plug 'nvim-lua/completion-nvim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'dart-lang/dart-vim-plugin'
@@ -127,13 +118,18 @@ autocmd FileType NvimTree set cursorline
 autocmd FileType NvimTree hi CursorLine cterm=none ctermfg=10 ctermbg=234
 autocmd FileType NvimTree hi CursorLine guifg=springgreen
 autocmd FileType NvimTree hi! link Directory PreProc
+
 lua <<EOF
     local tree_cb = require'nvim-tree.config'.nvim_tree_callback
     vim.g.nvim_tree_bindings = {
       ["sv"]             = tree_cb("vsplit"),
       ["ss"]             = tree_cb("split"),
-      ["[p"]              = tree_cb("prev_sibling"),
-      ["]n"]              = tree_cb("next_sibling"),
+      [">"]              = ':exe "vertical resize +10"<CR>',  -- default was next_sibling
+      ["<"]              = ':exe "vertical resize -10"<CR>',  -- default was prev_sibling
+      ["H"]              = '^',                               -- default was toggle_dotfiles
+      ["[p"]             = tree_cb("prev_sibling"),
+      ["]n"]             = tree_cb("next_sibling"),
+      ["f"]              = tree_cb("toggle_dotfiles"),
       -- default mappings
       ["<CR>"]           = tree_cb("edit"),
       ["o"]              = tree_cb("edit"),
@@ -143,7 +139,6 @@ lua <<EOF
       ["<S-CR>"]         = tree_cb("close_node"),
       ["<Tab>"]          = tree_cb("preview"),
       ["I"]              = tree_cb("toggle_ignored"),
-      ["f"]              = tree_cb("toggle_dotfiles"),
       ["R"]              = tree_cb("refresh"),
       ["a"]              = tree_cb("create"),
       ["d"]              = tree_cb("remove"),
@@ -160,11 +155,8 @@ lua <<EOF
 EOF
 
 
-
-
 nnoremap <silent> >  :exe "vertical resize +10"<CR>
 nnoremap <silent> <  :exe "vertical resize -10"<CR>
-
 
 
 
@@ -187,25 +179,6 @@ let g:airline_skip_empty_sections = 1
 let g:airline_theme="tomorrow"
 
 
-    
-
-"   map <silent> <expr> <C-g> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap files --type f --no-ignore<CR>"
-"   map <silent> <expr> <C-p> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap filer<CR>"
-"   map <silent> <expr> <Leader>l (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap buffers<CR>"
-"   map <silent> <expr> <Leader>t (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap tags<CR>"
-"   map <silent> <expr> <Leader>m (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Clap grep2<CR>"
-"   autocmd FileType clap_input inoremap <silent> <buffer> <ESC>  <Esc>:<c-u>call clap#handler#exit()<CR>
-"   let g:clap_maple_delay = 0
-"   let g:clap_popup_input_delay = 0
-"   let g:clap_on_move_delay = 0
-"   let g:clap_provider_grep_delay = 0
-"   let g:clap_disable_run_rooter = 1
-"   let g:clap_layout = { 'width': winwidth(0) * 3 / 4, 'height': winheight(0) / 2, 'row': winheight(0) / 8, 'col': winwidth(0) / 8 }
-"   let g:clap_provider_grep_blink = [0, 0]
-"   " let g:clap_theme = 'solarized_light'
-
-
-
 map <silent> <expr> <C-g> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Files<cr>"
 map <silent> <expr> <Leader>l (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Buffers<CR>"
 map <silent> <expr> <Leader>t (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":BTags<CR>"
@@ -222,17 +195,6 @@ let g:ctrlsf_auto_focus = { "at": "start" }
 let g:ctrlsf_search_mode = 'async'
 let g:ctrlsf_extra_backend_args = {'rg': '--no-ignore'}
 command! -nargs=? -complete=buffer -bang BL :call BufOnly('<args>', '<bang>')
-
-
-
-
-"         let g:ale_linters = {'go': ['golangci-lint', 'govet'], 'java': []}
-"         let g:ale_lint_on_text_changed = 0
-"         " let g:ale_fixers = {'go': ['goimports', 'gofmt'], '*': []}
-"         " let g:ale_fix_on_save = 1
-"         let g:ale_go_gofmt_options=" -s -w "
-"         let g:ale_go_golangci_lint_options = " "
-"         let g:ale_c_parse_makefile = 1
 
 
 
@@ -260,59 +222,6 @@ autocmd FileType vista noremap <buffer> <c-h> <nop>
 autocmd FileType vista noremap <buffer> <c-right> <nop>
 autocmd FileType vista noremap <buffer> <c-l> <nop>
 autocmd FileType vista noremap <buffer> <Leader>L <nop>
-
-
-
-"    nnoremap <silent> gd            <cmd>lua vim.lsp.buf.definition()<CR>
-"    nnoremap <silent> gD            <cmd>lua vim.lsp.buf.implementation()<CR>
-"    nnoremap <silent> <Leader>h     <cmd>lua vim.lsp.buf.hover()<CR>
-"    function! LspMaybeHighlight() abort
-"      lua pcall(vim.lsp.util.buf_clear_references)
-"      lua pcall(vim.lsp.buf.document_highlight)
-"    endfunction
-"    augroup lsp_aucommands
-"      au!
-"      au CursorMoved * call LspMaybeHighlight()
-"    augroup END
-"    
-"    lua << EOF
-"      local nvim_lsp = require'lspconfig'
-"      local completion = require'completion'
-"      local on_attach = function(_, bufnr)
-"        completion.on_attach()
-"      end
-"      nvim_lsp.rust_analyzer.setup({on_attach=on_attach})
-"      nvim_lsp.gopls.setup({on_attach=on_attach})
-"      nvim_lsp.sumneko_lua.setup({on_attach=on_attach})
-"      nvim_lsp.clangd.setup({on_attach=on_attach})
-"    EOF
-"    
-"    lua <<EOF
-"    vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-"      vim.lsp.diagnostic.on_publish_diagnostics, {
-"        signs = function(bufnr, client_id)
-"          local ok, result = pcall(vim.api.nvim_get_var, 'is_doing_easymotion')
-"          if not ok then
-"            return true
-"          end
-"          return result == 0
-"        end,
-"        virtual_text = false,
-"      }
-"    )
-"    EOF
-"   
-"   nnoremap <C-k> <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
-"   " Use <Tab> and <S-Tab> to navigate through popup menu
-"   inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-"   inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-"   " Set completeopt to have a better completion experience
-"   set completeopt=menuone,noinsert,noselect
-"   " Avoid showing message extra message when using completion
-"   set shortmess+=c
-
-
-
 
 
 
@@ -356,7 +265,13 @@ function! s:show_documentation()
  endif
 endfunction
 " Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
+function! LspMaybeHighlight() abort
+  call CocActionAsync('highlight')
+endfunction
+augroup lsp_aucommands
+  au!
+  au CursorMoved * silent call LspMaybeHighlight()
+augroup END
 " Symbol renaming.
 nmap <leader>rn <Plug>(coc-rename)
 "         " Formatting selected code.
@@ -401,49 +316,12 @@ command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-" Mappings using CoCList:
-"    " Show all diagnostics.
-"    nnoremap <silent> <space>a :<C-u>CocList diagnostics<cr>
-"    " Manage extensions.
-"    nnoremap <silent> <space>e :<C-u>CocList extensions<cr>
-"    " Show commands.
-"    nnoremap <silent> <space>c :<C-u>CocList commands<cr>
-"    " Find symbol of current document.
-"    nnoremap <silent> <space>o :<C-u>CocList outline<cr>
-"    " Search workspace symbols.
-"    nnoremap <silent> <space>s :<C-u>CocList -I symbols<cr>
-"    " Do default action for next item.
-"    nnoremap <silent> <space>j :<C-u>CocNext<CR>
-"    " Do default action for previous item.
-"    nnoremap <silent> <space>k :<C-u>CocPrev<CR>
-"    " Resume latest coc list.
-"    nnoremap <silent> <space>p :<C-u>CocListResume<CR>
-
-
-
-
-
-
-
-
-
 
 
 
 
 autocmd User EasyMotionPromptBegin silent! CocDisable
 autocmd User EasyMotionPromptEnd silent! CocEnable
-
-
-"   let g:multi_cursor_exit_from_insert_mode=0
-"   function! Multiple_cursors_before()
-"     CocDisable
-"     let g:ale_enabled=0
-"   endfunction
-"   function! Multiple_cursors_after()
-"     let g:ale_enabled=1
-"   endfunction
-
 
 
 let g:go_imports_autosave = 1
@@ -620,6 +498,7 @@ function! MyHighlights() abort
     hi Search                       cterm=none              ctermfg=232         ctermbg=214
     hi SpellCap                                             ctermfg=black       ctermbg=green
     hi LspReferenceText                                     ctermfg=black       ctermbg=green
+    hi CocHighlightText                                     ctermfg=black       ctermbg=green
     hi LspDiagnosticsError                                  ctermfg=cyan
     hi SignColumn                                           ctermfg=white       ctermbg=black
     hi Whitespace                                           ctermfg=DarkGray
@@ -636,6 +515,7 @@ function! MyHighlights() abort
     hi Search                       gui=NONE                guifg=black         guibg=goldenrod2
     hi SpellCap                                             guifg=black         guibg=springgreen
     hi LspReferenceText                                     guifg=black         guibg=limegreen
+    hi CocHighlightText                                     guifg=black         guibg=limegreen
     hi LspDiagnosticsError                                  guifg=cyan
     hi SignColumn                                           guifg=white
     hi Whitespace                                           guifg=DarkSlateGray
