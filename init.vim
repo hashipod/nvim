@@ -197,6 +197,21 @@ let g:ctrlsf_extra_backend_args = {'rg': '--no-ignore'}
 command! -nargs=? -complete=buffer -bang BL :call BufOnly('<args>', '<bang>')
 
 
+let s:my_coc_file_types = ['ctrlsf']
+
+function! s:disable_coc_for_type()
+    if index(s:my_coc_file_types, &filetype) == -1
+        let b:coc_enabled = 0
+    endif
+endfunction
+
+augroup CocGroup
+    autocmd!
+    autocmd BufNew,BufEnter * call s:disable_coc_for_type()
+augroup end
+
+
+
 
 let g:previm_open_cmd = 'open -a Safari'
 augroup PrevimSettings
@@ -291,7 +306,7 @@ augroup end
 "         " Remap keys for applying codeAction to the current line.
 "         nmap <leader>ac <Plug>(coc-codeaction)
 " Apply AutoFix to problem on the current line.
-nmap <leader>qf <Plug>(coc-fix-current)
+nmap <leader>k <Plug>(coc-fix-current)
 " Map function and class text objects
 " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
 xmap if <Plug>(coc-funcobj-i)
