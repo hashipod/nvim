@@ -28,11 +28,7 @@ nvim +PlugInstall +qall
 
 ```
 # install coc extensions
-CocInstall coc-snippets
-CocInstall coc-highlight
-CocInstall coc-json
-CocInstall coc-go
-CocInstall coc-clangd
+CocInstall coc-snippets coc-highlight coc-json coc-go coc-clangd
 ```
 
 
