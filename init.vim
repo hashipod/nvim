@@ -170,7 +170,7 @@ function! AirlineInit()
 endfunction
 autocmd VimEnter * call AirlineInit()
 let g:airline_section_b = '%{airline#extensions#branch#head()}'
-let g:airline_section_c = '%{strpart(expand("%:p"), strlen(getcwd())+1)}'
+let g:airline_section_c = '%{expand("%:p")}'
 let g:airline_section_x = ''
 let g:airline_section_y = ''
 " let g:airline_section_z = '%3p%% %3l/%L:%3v'
@@ -197,11 +197,13 @@ let g:ctrlsf_extra_backend_args = {'rg': '--no-ignore'}
 command! -nargs=? -complete=buffer -bang BL :call BufOnly('<args>', '<bang>')
 
 
-let s:my_coc_file_types = ['ctrlsf']
+let g:my_coc_file_types = ['go', 'c', 'cpp', 'h', 'asm', 'hpp', 'vim', 'sh', 'py']
 
 function! s:disable_coc_for_type()
-    if index(s:my_coc_file_types, &filetype) == -1
+    if index(g:my_coc_file_types, &filetype) == -1
         let b:coc_enabled = 0
+    else
+        let b:coc_enabled = 1
     endif
 endfunction
 

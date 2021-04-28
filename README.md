@@ -26,8 +26,15 @@ python2 -m pip install --user --upgrade pynvim
 nvim +PlugInstall +qall
 ```
 
-# install clap binary: maple, SEE https://github.com/liuchengxu/vim-clap/blob/master/INSTALL.md#download-the-prebuilt-binary-from-github-release
-:call clap#installer#download_binary()
+```
+# install coc extensions
+CocInstall coc-snippets
+CocInstall coc-highlight
+CocInstall coc-json
+CocInstall coc-go
+CocInstall coc-clangd
+```
+
 
 ```
 # Install tools(rg, ctags)
@@ -35,19 +42,10 @@ nvim +PlugInstall +qall
 # 1. using snapd
 # snap install ripgrep --classic
 # snap install universal-ctags --classic
-# snap install clangd --classic
 #
 # 2. or using homebrew
 # brew tap universal-ctags/universal-ctags
 # brew install --with-jansson --HEAD universal-ctags/universal-ctags/universal-ctags
-```
-
-```
-# install lua lsp if needed
-# first install clang , unzip 
-# then install lua lsp
-nvim +'LspInstall sumneko_lua'
-or nvim, then :LspInstall sumneko_lua
 ```
 
 # plugins will be installed in ~/.nvim
@@ -63,14 +61,7 @@ nvim +GoInstallBinaries
 
 ## For cpp
 
-first install clangd
-
-```
-# 1. using snapd
-# snap install clangd --classic
-# 2. or pacman:
-# pacman -Sy clangd
-```
+coc-clangd already installed clangd
 
 clangd need `compile_commands.json` at project root,
 add this line in your CMakeLists.txt, for generating `compile_commands.json` file.
