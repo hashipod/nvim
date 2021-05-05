@@ -9,47 +9,45 @@ let mapleader = "\<Space>"
 call plug#begin('~/.nvim/plugged')
 
 Plug 'kyazdani42/nvim-tree.lua'
-
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'Konfekt/FastFold'
 Plug 'tmhedberg/SimpylFold'
 Plug 'jiangmiao/auto-pairs'
 Plug 'dyng/ctrlsf.vim'
-Plug 'flazz/vim-colorschemes'
-Plug 'markvincze/panda-vim'
 Plug 'liuchengxu/vista.vim'
-
-Plug 'kannokanno/previm'
-Plug 'fatih/vim-go'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'easymotion/vim-easymotion'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
-Plug 'xolox/vim-misc'
-
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'terryma/vim-multiple-cursors'
-Plug 'mxw/vim-jsx'
-Plug 'pangloss/vim-javascript'
 Plug 'prettier/vim-prettier', { 'do': 'npm install' }
-Plug 'elzr/vim-json'
-Plug 'mattn/emmet-vim'
 Plug 'schickling/vim-bufonly'
 Plug 'rbgrouleff/bclose.vim'
-Plug 'cakebaker/scss-syntax.vim'
-Plug 'nathanaelkane/vim-indent-guides'
+Plug 'Yggdroot/indentLine'
+
+Plug 'fatih/vim-go'
 Plug 'derekwyatt/vim-scala'
-
 Plug 'rust-lang/rust.vim'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'elzr/vim-json'
 
-Plug 'dart-lang/dart-vim-plugin'
+Plug 'flazz/vim-colorschemes'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+" Plug 'xolox/vim-misc'
+" Plug 'mxw/vim-jsx'
+" Plug 'pangloss/vim-javascript'
+" Plug 'mattn/emmet-vim'
+" Plug 'cakebaker/scss-syntax.vim'
+" Plug 'dart-lang/dart-vim-plugin'
+
 Plug 'tpope/vim-abolish'
-Plug 'mzlogin/vim-markdown-toc'
+Plug 'tpope/vim-fugitive'
+
 Plug 'godlygeek/tabular'              " required by vim-markdown
 Plug 'plasticboy/vim-markdown'
-Plug 'tpope/vim-fugitive'
-Plug 'easymotion/vim-easymotion'
+Plug 'mzlogin/vim-markdown-toc'
+Plug 'kannokanno/previm'
 
 call plug#end()
 
@@ -76,6 +74,12 @@ function! CreateCenteredFloatingWindow()
     call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
     au BufWipeout <buffer> exe 'bw '.s:buf
 endfunction
+map <silent> <expr> <C-g>     (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Files<cr>"
+map <silent> <expr> <Leader>l (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Buffers<CR>"
+map <silent> <expr> <Leader>t (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":BTags<CR>"
+map <silent> <expr> <Leader>m (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Rg<CR>"
+let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
+
 
 
 
@@ -89,13 +93,12 @@ let g:nvim_tree_hide_dotfiles = 1 "0 by default, this option hides files and fol
 let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
 let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
 let g:nvim_tree_tab_open = 1 "0 by default, will open the tree when entering a new tab and the tree was previously open
+let g:nvim_tree_width_allow_resize = v:true
 let g:nvim_tree_show_icons = {
     \ 'git': 0,
     \ 'folders': 1,
     \ 'files': 0,
     \}
-let g:nvim_tree_width_allow_resize = v:true
-
 let g:nvim_tree_icons = {
     \ 'default': '  ',
     \ 'symlink': '  ',
@@ -118,7 +121,6 @@ autocmd FileType NvimTree set cursorline
 autocmd FileType NvimTree hi CursorLine cterm=none ctermfg=10 ctermbg=234
 autocmd FileType NvimTree hi CursorLine guifg=springgreen
 autocmd FileType NvimTree hi! link Directory PreProc
-
 lua <<EOF
     local tree_cb = require'nvim-tree.config'.nvim_tree_callback
     vim.g.nvim_tree_bindings = {
@@ -160,30 +162,9 @@ nnoremap <silent> <  :exe "vertical resize -10"<CR>
 
 
 
-let g:airline_left_sep=''
-let g:airline_right_sep=''
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = ' '
-function! AirlineInit()
-    let g:airline#extensions#default#layout = ['a', 'b', 'c', 'x', 'y', 'z']
-endfunction
-autocmd VimEnter * call AirlineInit()
-let g:airline_section_b = '%{airline#extensions#branch#head()}'
-let g:airline_section_c = '%{expand("%:p")}'
-let g:airline_section_x = ''
-let g:airline_section_y = ''
-" let g:airline_section_z = '%3p%% %3l/%L:%3v'
-let g:airline_section_z = '%3p%%'
-let g:airline_skip_empty_sections = 1
-let g:airline_theme="tomorrow"
-
-
-map <silent> <expr> <C-g> (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Files<cr>"
-map <silent> <expr> <Leader>l (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Buffers<CR>"
-map <silent> <expr> <Leader>t (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":BTags<CR>"
-map <silent> <expr> <Leader>m (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Rg<CR>"
-let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
 
 
 
@@ -194,23 +175,11 @@ vnoremap <Leader>a y<ESC> :CtrlSF "<C-R>""
 let g:ctrlsf_auto_focus = { "at": "start" }
 let g:ctrlsf_search_mode = 'async'
 let g:ctrlsf_extra_backend_args = {'rg': '--no-ignore'}
+
+
+
 command! -nargs=? -complete=buffer -bang BL :call BufOnly('<args>', '<bang>')
 
-
-let g:my_coc_file_types = ['go', 'c', 'cpp', 'h', 'asm', 'hpp', 'vim', 'sh', 'py']
-
-function! s:disable_coc_for_type()
-    if index(g:my_coc_file_types, &filetype) == -1
-        let b:coc_enabled = 0
-    else
-        let b:coc_enabled = 1
-    endif
-endfunction
-
-augroup CocGroup
-    autocmd!
-    autocmd BufNew,BufEnter * call s:disable_coc_for_type()
-augroup end
 
 
 
@@ -223,124 +192,49 @@ augroup END
 
 
 
-let g:vista_echo_cursor = 1
-let g:vista_cursor_delay = 400
-let g:vista_echo_cursor_strategy = 'echo'
-let g:vista#renderer#enable_icon = 0
-let g:vista_blink = [0, 0]
-let g:vista_top_level_blink = [0, 0]
-" let g:vista#renderer#ctags='kind'
-let g:vista_disable_statusline = 1
-let g:vista_sidebar_width = 50
-let g:vista_enable_centering_jump = 0
 nnoremap <Leader>o :Vista!! <CR>
-autocmd FileType vista noremap <buffer> <c-left> <nop>
-autocmd FileType vista noremap <buffer> <c-h> <nop>
-autocmd FileType vista noremap <buffer> <c-right> <nop>
-autocmd FileType vista noremap <buffer> <c-l> <nop>
-autocmd FileType vista noremap <buffer> <Leader>L <nop>
 
 
 
-
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ?:verbose imap <tab>? to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
- \ pumvisible() ? "\<C-n>" : (<SID>check_back_space() ? "\<TAB>" : coc#refresh())
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
- let col = col('.') - 1
- return !col || getline('.')[col - 1] =~# '\s'
+let g:my_coc_file_types = ['go', 'c', 'cpp', 'h', 'asm', 'hpp', 'vim', 'sh', 'py']
+function! s:disable_coc_for_type()
+    if index(g:my_coc_file_types, &filetype) == -1
+        let b:coc_enabled = 0
+    else
+        let b:coc_enabled = 1
+    endif
 endfunction
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-" position. Coc only does snippet and additional edit on confirm.
-" <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
-if exists('*complete_info')
- inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-else
- inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-endif
-" Use `[g` and `]g` to navigate diagnostics
+function! s:lsp_maybe_highlight() abort
+  call CocActionAsync('highlight')
+endfunction
+augroup CocGroup
+    autocmd!
+    autocmd BufNew,BufEnter *    call s:disable_coc_for_type()
+    autocmd CursorMoved * silent call s:lsp_maybe_highlight()
+augroup end
+
+
+inoremap <silent><expr> <TAB>
+    \ pumvisible() ? "\<C-n>" : (<SID>check_back_space() ? "\<TAB>" : coc#refresh())
+inoremap <expr><S-TAB>
+    \ pumvisible() ? "\<C-p>" : "\<C-h>"
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1] =~# '\s'
+endfunction
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
-" GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-nmap <leader>rn <Plug>(coc-rename)
-
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-function! s:show_documentation()
- if (index(['vim','help'], &filetype) >= 0)
- execute 'h '.expand('<cword>')
- else
- call CocAction('doHover')
- endif
-endfunction
-" Highlight the symbol and its references when holding the cursor.
-function! LspMaybeHighlight() abort
-  call CocActionAsync('highlight')
-endfunction
-augroup lsp_aucommands
-  au!
-  au CursorMoved * silent call LspMaybeHighlight()
-augroup END
-" Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
-"         " Formatting selected code.
-"         xmap <leader>f <Plug>(coc-format-selected)
-"         nmap <leader>f <Plug>(coc-format-selected)
-augroup mygroup
- autocmd!
- " Setup formatexpr specified filetype(s).
- autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
- " Update signature help on jump placeholder.
- autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-"         " Applying codeAction to the selected region.
-"         " Example: `<leader>aap` for current paragraph
-"         xmap <leader>a <Plug>(coc-codeaction-selected)
-"         nmap <leader>a <Plug>(coc-codeaction-selected)
-"         " Remap keys for applying codeAction to the current line.
-"         nmap <leader>ac <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
-nmap <leader>k <Plug>(coc-fix-current)
-" Map function and class text objects
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
-xmap if <Plug>(coc-funcobj-i)
-omap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap af <Plug>(coc-funcobj-a)
-xmap ic <Plug>(coc-classobj-i)
-omap ic <Plug>(coc-classobj-i)
-xmap ac <Plug>(coc-classobj-a)
-omap ac <Plug>(coc-classobj-a)
-" Use CTRL-S for selections ranges.
-" Requires 'textDocument/selectionRange' support of LS, ex: coc-tsserver
-nmap <silent> <C-s> <Plug>(coc-range-select)
-xmap <silent> <C-s> <Plug>(coc-range-select)
-" Add `:Format` command to format current buffer.
-command! -nargs=0 Format :call CocAction('format')
-" Add `:Fold` command to fold current buffer.
-command! -nargs=? Fold :call CocAction('fold', <f-args>)
-" Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
-" Add (Neo)Vim's native statusline support.
-" NOTE: Please see `:h coc-status` for integrations with external plugins that
-" provide custom statusline: lightline.vim, vim-airline.
+nmap <leader>rn  <Plug>(coc-rename)
+nnoremap <silent> K :call <SID>call CocAction('doHover')<CR>
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 
 
 
-autocmd User EasyMotionPromptBegin silent! CocDisable
-autocmd User EasyMotionPromptEnd silent! CocEnable
 
 
 let g:go_imports_autosave = 1
@@ -354,15 +248,19 @@ let g:go_echo_command_info = 0
 let g:go_echo_go_info=0
 
 
-let g:user_emmet_leader_key='<C-C>'
-let g:user_emmet_settings = {
-\  'javascript.jsx' : {
-\      'extends' : 'jsx',
-\  },
-\}
-let g:vim_json_syntax_conceal = 0
-let g:jsx_ext_required = 0
-let g:prettier#config#tab_width = 4
+
+
+"  let g:user_emmet_leader_key='<C-C>'
+"  let g:user_emmet_settings = {
+"  \  'javascript.jsx' : {
+"  \      'extends' : 'jsx',
+"  \  },
+"  \}
+"  let g:vim_json_syntax_conceal = 0
+"  let g:jsx_ext_required = 0
+"  let g:prettier#config#tab_width = 4
+
+
 
 
 let g:rust_fold = 1
@@ -374,8 +272,6 @@ let g:fastfold_fold_command_suffixes =  ['x','X','a','A']
 let g:fastfold_savehook = 0
 let g:vim_markdown_folding_disabled = 1
 
-
-let g:indent_guides_guide_size = 1
 
 
 
@@ -390,6 +286,15 @@ function! DoingEasyMotion()
   let g:is_doing_easymotion = 0
 endfunction
 nmap f :call DoingEasyMotion()<CR>
+autocmd User EasyMotionPromptBegin silent! CocDisable
+autocmd User EasyMotionPromptEnd silent! CocEnable
+
+
+
+
+let g:multi_cursor_use_default_mapping=0
+let g:multi_cursor_start_word_key      = '<CS-N>'
+let g:multi_cursor_quit_key            = '<Esc>'
 
 
 
@@ -428,6 +333,17 @@ endif
 
 
 
+autocmd FileType vista,NvimTree noremap <buffer> <c-j> <nop>
+autocmd FileType vista,NvimTree noremap <buffer> <c-i> <nop>
+autocmd FileType vista,NvimTree noremap <buffer> <c-o> <nop>
+autocmd FileType vista,NvimTree noremap <buffer> <c-h> <nop>
+autocmd FileType vista,NvimTree noremap <buffer> <c-l> <nop>
+autocmd FileType vista,NvimTree noremap <buffer> <Leader>L <nop>
+autocmd FileType vista,NvimTree noremap <buffer> <Leader>q <nop>
+autocmd FileType vista,NvimTree noremap <buffer> <Leader>x <nop>
+autocmd FileType vista,NvimTree noremap <buffer> <Leader>w <nop>
+
+
 
 """""""""""""""""""""""""""""""""""""""
 """""""" Settings for Mappings """""""""
@@ -443,7 +359,6 @@ vmap <C-m> %
 
 noremap <silent> <C-h> :bprev<CR>
 noremap <silent> <C-l> :bnext<CR>
-
 nnoremap <silent> <Leader>q :Bclose<CR>
 nnoremap <silent> <Leader>x <C-w>c
 
