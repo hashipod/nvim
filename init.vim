@@ -298,6 +298,8 @@ let g:multi_cursor_quit_key            = '<Esc>'
 
 
 
+let g:vim_json_syntax_conceal = 0
+
 
 
 

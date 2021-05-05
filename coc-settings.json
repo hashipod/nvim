@@ -1,4 +1,6 @@
 {
     "languageserver": {
-    }
+    },
+    "rust-analyzer.enable": true,
+    "rust-analyzer.server.path": "/usr/local/bin/rust-analyzer"
 }
