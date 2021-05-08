@@ -256,10 +256,10 @@ let g:go_echo_go_info=0
 "  \      'extends' : 'jsx',
 "  \  },
 "  \}
-"  let g:vim_json_syntax_conceal = 0
 "  let g:jsx_ext_required = 0
 "  let g:prettier#config#tab_width = 4
 
+let g:vim_json_syntax_conceal = 0
 
 
 
