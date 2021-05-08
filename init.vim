@@ -85,6 +85,7 @@ let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
 
 
 let g:nvim_tree_ignore = [ '.git', 'node_modules', '.cache' ] "empty by default
+let g:nvim_tree_gitignore = 1
 let g:nvim_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DIR` or `vim`
 let g:nvim_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
 let g:nvim_tree_follow = 0 "0 by default, this option allows the cursor to be updated when entering a buffer
@@ -290,11 +291,6 @@ autocmd User EasyMotionPromptBegin silent! CocDisable
 autocmd User EasyMotionPromptEnd silent! CocEnable
 
 
-
-
-let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_start_word_key      = '<CS-N>'
-let g:multi_cursor_quit_key            = '<Esc>'
 
 
 
