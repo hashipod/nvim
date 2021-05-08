@@ -261,6 +261,7 @@ let g:go_echo_go_info=0
 "  let g:prettier#config#tab_width = 4
 
 let g:vim_json_syntax_conceal = 0
+let g:indentLine_setConceal = 0
 
 
 
