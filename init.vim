@@ -239,9 +239,6 @@ let g:go_echo_go_info=0
 
 
 
-
-
-
 nnoremap <Leader>p <Plug>(Prettier):retab <CR>
 
 
@@ -475,6 +472,7 @@ let g:fastfold_fold_command_suffixes =  ['x','X','a','A']
 let g:fastfold_savehook = 0
 let g:vim_markdown_folding_disabled = 1
 let g:vim_json_syntax_conceal = 0
+let g:indentLine_setConceal = 0
 
 
 
