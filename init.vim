@@ -9,8 +9,11 @@ let mapleader = "\<Space>"
 call plug#begin('~/.nvim/plugged')
 
 Plug 'kyazdani42/nvim-tree.lua'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neovim/nvim-lspconfig'
+
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+
 Plug 'junegunn/fzf.vim'
 Plug 'Konfekt/FastFold'
 Plug 'tmhedberg/SimpylFold'
@@ -40,6 +43,8 @@ Plug 'godlygeek/tabular'              " required by vim-markdown
 Plug 'plasticboy/vim-markdown'
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'kannokanno/previm'
+
+Plug 'lifepillar/vim-mucomplete'
 
 call plug#end()
 
@@ -130,7 +135,7 @@ lua <<EOF
       ["<C-t>"]          = tree_cb("tabnew"),
       ["<BS>"]           = tree_cb("close_node"),
       ["<S-CR>"]         = tree_cb("close_node"),
-      ["<Tab>"]          = tree_cb("preview"),
+      ["<Tab>"]          = "",
       ["I"]              = tree_cb("toggle_ignored"),
       ["R"]              = tree_cb("refresh"),
       ["a"]              = tree_cb("create"),
@@ -186,39 +191,112 @@ nnoremap <Leader>o :Vista!! <CR>
 
 
 
-let g:my_coc_file_types = ['go', 'c', 'cpp', 'h', 'asm', 'hpp', 'vim', 'sh', 'py']
-function! s:disable_coc_for_type()
-    if index(g:my_coc_file_types, &filetype) == -1
-        let b:coc_enabled = 0
-    else
-        let b:coc_enabled = 1
-    endif
-endfunction
-function! s:lsp_maybe_highlight() abort
-  call CocActionAsync('highlight')
-endfunction
-augroup CocGroup
-    autocmd!
-    autocmd BufNew,BufEnter *    call s:disable_coc_for_type()
-    autocmd CursorMoved * silent call s:lsp_maybe_highlight()
-augroup end
 
 
-inoremap <silent><expr> <TAB> (pumvisible() ? "\<C-n>" : (<SID>check_back_space() ? "\<TAB>" : coc#refresh()))
-inoremap <expr><S-TAB> (pumvisible() ? "\<C-p>" : "\<C-h>")
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1] =~# '\s'
-endfunction
-nnoremap <silent> [g <Plug>(coc-diagnostic-prev)
-nnoremap <silent> ]g <Plug>(coc-diagnostic-next)
-nnoremap <silent> gd <Plug>(coc-definition)
-nnoremap <silent> gy <Plug>(coc-type-definition)
-nnoremap <silent> gi <Plug>(coc-implementation)
-nnoremap <silent> gr <Plug>(coc-references)
-nnoremap <leader>rn  <Plug>(coc-rename)
-nnoremap <silent> K :call <SID>call CocAction('doHover')<CR>
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+""" see https://github.com/neovim/nvim-lspconfig#Keybindings-and-completion
+lua << EOF
+local nvim_lsp = require('lspconfig')
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+
+  -- Set some keybinds conditional on server capabilities
+  if client.resolved_capabilities.document_formatting then
+    buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  end
+  if client.resolved_capabilities.document_range_formatting then
+    buf_set_keymap("v", "<space>f", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
+  end
+
+  -- Set autocommands conditional on server_capabilities
+  if client.resolved_capabilities.document_highlight then
+    vim.api.nvim_exec([[
+      augroup lsp_document_highlight
+        autocmd! * <buffer>
+        autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+        autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+      augroup END
+    ]], false)
+  end
+end
+
+-- Use a loop to conveniently both setup defined servers 
+-- and map buffer local keybindings when the language server attaches
+local servers = { "gopls" }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup { on_attach = on_attach }
+end
+EOF
+
+
+
+
+set completeopt+=noselect
+set completeopt-=preview
+set shortmess+=c   " Shut off completion messages
+set belloff+=ctrlg " If Vim beeps during completion
+let g:mucomplete#enable_auto_at_startup = 1
+let g:mucomplete#completion_delay = 1
+
+
+
+
+
+"    let g:my_coc_file_types = ['go', 'c', 'cpp', 'h', 'asm', 'hpp', 'vim', 'sh', 'py']
+"    function! s:disable_coc_for_type()
+"        if index(g:my_coc_file_types, &filetype) == -1
+"            let b:coc_enabled = 0
+"        else
+"            let b:coc_enabled = 1
+"        endif
+"    endfunction
+"    function! s:lsp_maybe_highlight() abort
+"      call CocActionAsync('highlight')
+"    endfunction
+"    augroup CocGroup
+"        autocmd!
+"        autocmd BufNew,BufEnter *    call s:disable_coc_for_type()
+"        autocmd CursorMoved * silent call s:lsp_maybe_highlight()
+"    augroup end
+
+"    " Use <c-space> to trigger completion.
+"    inoremap <silent><expr> <c-space> coc#refresh()
+"    inoremap <silent><expr> <TAB> (pumvisible() ? "\<C-n>" : (<SID>check_back_space() ? "\<TAB>" : coc#refresh()))
+"    inoremap <expr><S-TAB> (pumvisible() ? "\<C-p>" : "\<C-h>")
+"    function! s:check_back_space() abort
+"        let col = col('.') - 1
+"        return !col || getline('.')[col - 1] =~# '\s'
+"    endfunction
+"    nnoremap [g <Plug>(coc-diagnostic-prev)
+"    nnoremap ]g <Plug>(coc-diagnostic-next)
+"    nnoremap gd <Plug>(coc-definition)
+"    nnoremap gy <Plug>(coc-type-definition)
+"    nnoremap gi <Plug>(coc-implementation)
+"    nnoremap gr <Plug>(coc-references)
+"    nnoremap K :call <SID>call CocAction('doHover')<CR>
+"    nnoremap <leader>rn  <Plug>(coc-rename)
+"    set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 
 
@@ -304,8 +382,8 @@ autocmd FileType vista,NvimTree noremap <buffer> <Leader>w <nop>
 """""""""""""""""""""""""""""""""""""""
 
 nnoremap J mzJ`z
-nnoremap H ^
-nnoremap L $
+noremap H ^
+noremap L $
 vnoremap L g_
 
 nnoremap <C-m> %
@@ -335,6 +413,7 @@ noremap  <Leader>w  :w<CR>
 
 vnoremap <C-r> "hy:%sno#<C-r>h##gc<left><left><left>
 nnoremap S     :%sno##g<LEFT><LEFT>
+inoremap <C-y> <C-r>"
 
 nnoremap m <C-d>
 nnoremap , <C-u>
@@ -397,7 +476,7 @@ function! MyHighlights() abort
     hi LineNr                                                                   ctermbg=NONE
     hi Normal                                               ctermbg=234
 
-    hi CursorLine                                           cterm=none ctermfg=10 ctermbg=234
+    hi CursorLine                                           cterm=none          ctermbg=234
 
 
     " for gui
@@ -416,7 +495,7 @@ function! MyHighlights() abort
     hi LineNr                                                                   guibg=NONE
     hi Normal                                                                   guibg=#1c1c1c
 
-    hi CursorLine                                           guifg=springgreen
+    hi CursorLine                                                               guibg=black
 
 endfunction
 
@@ -485,6 +564,8 @@ let g:indentLine_setConceal = 0
 set splitbelow
 set splitright
 set cursorline
+" reduce cursor hold time to 500s
+set updatetime=500
 
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×
 set list
