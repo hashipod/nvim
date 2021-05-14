@@ -52,13 +52,14 @@ Plug 'kannokanno/previm'
 call plug#end()
 
 
+
+
 function! CreateCenteredFloatingWindow()
     let width = min([&columns - 4, max([80, &columns - 20])])
     let height = min([&lines - 4, max([20, &lines - 10])])
     let top = ((&lines - height) / 2) - 1
     let left = (&columns - width) / 2
     let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
-
     let top = "╭" . repeat("─", width - 2) . "╮"
     let mid = "│" . repeat(" ", width - 2) . "│"
     let bot = "╰" . repeat("─", width - 2) . "╯"
@@ -79,7 +80,7 @@ map <silent> <expr> <Leader>l (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').
 map <silent> <expr> <Leader>t (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":BTags<CR>"
 map <silent> <expr> <Leader>m (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Rg<CR>"
 let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
-
+let $FZF_DEFAULT_OPTS=" --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
 
 
 
@@ -118,10 +119,6 @@ let g:nvim_tree_icons = {
 nnoremap <Leader>n :NvimTreeToggle<CR>
 nnoremap <leader>r :NvimTreeRefresh<CR>
 nnoremap @ :NvimTreeFindFile<CR>
-autocmd FileType NvimTree set cursorline
-autocmd FileType NvimTree hi CursorLine cterm=none ctermfg=10 ctermbg=234
-autocmd FileType NvimTree hi CursorLine guifg=springgreen
-autocmd FileType NvimTree hi! link Directory PreProc
 lua <<EOF
     local tree_cb = require'nvim-tree.config'.nvim_tree_callback
     vim.g.nvim_tree_bindings = {
@@ -158,9 +155,6 @@ lua <<EOF
 EOF
 
 
-nnoremap <silent> >  :exe "vertical resize +10"<CR>
-nnoremap <silent> <  :exe "vertical resize -10"<CR>
-
 
 
 let g:airline#extensions#tabline#enabled = 1
@@ -176,6 +170,8 @@ vnoremap <Leader>a y<ESC> :CtrlSF "<C-R>""
 let g:ctrlsf_auto_focus = { "at": "start" }
 let g:ctrlsf_search_mode = 'async'
 let g:ctrlsf_extra_backend_args = {'rg': '--no-ignore'}
+
+
 
 
 
@@ -251,27 +247,6 @@ let g:go_echo_go_info=0
 
 
 
-"  let g:user_emmet_leader_key='<C-C>'
-"  let g:user_emmet_settings = {
-"  \  'javascript.jsx' : {
-"  \      'extends' : 'jsx',
-"  \  },
-"  \}
-"  let g:jsx_ext_required = 0
-"  let g:prettier#config#tab_width = 4
-
-let g:vim_json_syntax_conceal = 0
-
-
-
-let g:rust_fold = 1
-let g:perl_fold = 1
-let g:python_fold = 1
-let g:erlang_fold = 1
-let g:go_fold = 1
-let g:fastfold_fold_command_suffixes =  ['x','X','a','A']
-let g:fastfold_savehook = 0
-let g:vim_markdown_folding_disabled = 1
 
 
 
@@ -294,11 +269,6 @@ autocmd User EasyMotionPromptEnd silent! CocEnable
 
 
 
-let g:vim_json_syntax_conceal = 0
-
-
-
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " cscope setting
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -313,7 +283,6 @@ if has("cscope")
     endif
     set csverb
 endif
-
 nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
 nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
 nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
@@ -352,22 +321,22 @@ noremap H ^
 noremap L $
 vnoremap L g_
 
-nmap <C-m> %
-vmap <C-m> %
+nnoremap <C-m> %
+vnoremap <C-m> %
 
 noremap <silent> <C-h> :bprev<CR>
 noremap <silent> <C-l> :bnext<CR>
 nnoremap <silent> <Leader>q :Bclose<CR>
 nnoremap <silent> <Leader>x <C-w>c
 
-map <Leader>L :set invnumber<CR>
+nnoremap <Leader>L :set invnumber<CR>
 
-map <Leader>T :%s/\s\+$//<CR>
-map <Leader>U :g/^$/d<CR>
-map <Leader>R :retab<CR>
-map <Leader>. :@:<CR>
-nmap <silent> <Leader>ev :e $MYVIMRC<CR>
-nmap <silent> <Leader>es :so $MYVIMRC<CR>
+nnoremap <Leader>T :%s/\s\+$//<CR>
+nnoremap <Leader>U :g/^$/d<CR>
+nnoremap <Leader>R :retab<CR>
+nnoremap <Leader>. :@:<CR>
+nnoremap <silent> <Leader>ev :e $MYVIMRC<CR>
+nnoremap <silent> <Leader>es :so $MYVIMRC<CR>
 nnoremap <silent> <leader>b :nohlsearch<CR>
 nnoremap <Leader>= :wincmd =<CR>
 nnoremap <Leader>c :let @+=expand('%:p')<CR>
@@ -378,7 +347,7 @@ vnoremap <C-r> "hy:%sno#<C-r>h##gc<left><left><left>
 " map C-j in all modes to save buffer
 noremap  <C-j>      :w<CR>
 noremap! <C-j> <ESC>:w<CR>
-noremap  <Leader>w :w<CR>
+noremap  <Leader>w  :w<CR>
 
 noremap <C-t> :b#<CR>
 
@@ -415,14 +384,18 @@ command! Jsonf :execute '%!python2 -m json.tool'
 
 
 
-" inoremap <C-e> <C-o>A
-" inoremap <C-a> <C-o>I
 inoremap <C-e> <C-o>$
 inoremap <C-a> <C-o>^
 inoremap <C-b> <Left>
 inoremap <C-f> <Right>
 inoremap <C-k> <C-o>D
 inoremap <C-t> <C-o>O
+
+
+
+nnoremap <silent> >  :exe "vertical resize +10"<CR>
+nnoremap <silent> <  :exe "vertical resize -10"<CR>
+
 
 
 function! MyHighlights() abort
@@ -442,7 +415,6 @@ function! MyHighlights() abort
     hi LineNr                                                                   ctermbg=NONE
     hi Normal                                               ctermbg=234
 
-
     " for gui
     hi Search                       gui=NONE                guifg=black         guibg=goldenrod2
     hi SpellCap                                             guifg=black         guibg=springgreen
@@ -458,19 +430,8 @@ function! MyHighlights() abort
     hi multiple_cursors_visual                              guifg=black         guibg=white
     hi LineNr                                                                   guibg=NONE
     hi Normal                                                                   guibg=#1c1c1c
-
-    " hi Pmenu                ctermfg=238 ctermbg=252
-    " hi PmenuSel             cterm=reverse ctermfg=238 ctermbg=252
-    " hi PmenuSbar            ctermbg=248 guibg=Grey
-    " hi PmenuThumb           ctermbg=0 guibg=Black
-    " hi Pmenu                ctermfg=0       ctermbg=6
-    " hi PmenuSel             ctermfg=NONE    ctermbg=24      cterm=NONE
-
-    " hi ActiveWindow         ctermbg=235
-    " hi InactiveWindow       ctermbg=236
-    " set winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
-
 endfunction
+
 augroup MyColors
     autocmd!
     autocmd ColorScheme * call MyHighlights()
@@ -514,6 +475,17 @@ autocmd BufNewFile,BufReadPost *.json set shiftwidth=4 softtabstop=4
 
 
 
+let g:rust_fold = 1
+let g:perl_fold = 1
+let g:python_fold = 1
+let g:erlang_fold = 1
+let g:go_fold = 1
+let g:fastfold_fold_command_suffixes =  ['x','X','a','A']
+let g:fastfold_savehook = 0
+let g:vim_markdown_folding_disabled = 1
+let g:vim_json_syntax_conceal = 0
+
+
 
 """""""""""""""""""""""""""""""""""""""
 """""""""
@@ -523,6 +495,7 @@ autocmd BufNewFile,BufReadPost *.json set shiftwidth=4 softtabstop=4
 
 set splitbelow
 set splitright
+set cursorline
 
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×
 set list
