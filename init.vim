@@ -27,20 +27,12 @@ Plug 'rbgrouleff/bclose.vim'
 Plug 'Yggdroot/indentLine'
 
 Plug 'fatih/vim-go'
-Plug 'derekwyatt/vim-scala'
 Plug 'rust-lang/rust.vim'
 Plug 'elzr/vim-json'
 
 Plug 'flazz/vim-colorschemes'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-" Plug 'xolox/vim-misc'
-" Plug 'mxw/vim-jsx'
-" Plug 'pangloss/vim-javascript'
-" Plug 'mattn/emmet-vim'
-" Plug 'cakebaker/scss-syntax.vim'
-" Plug 'dart-lang/dart-vim-plugin'
-
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-fugitive'
 
@@ -75,10 +67,11 @@ function! CreateCenteredFloatingWindow()
     call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
     au BufWipeout <buffer> exe 'bw '.s:buf
 endfunction
-map <silent> <expr> <C-g>     (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Files<cr>"
-map <silent> <expr> <Leader>l (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Buffers<CR>"
-map <silent> <expr> <Leader>t (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":BTags<CR>"
-map <silent> <expr> <Leader>m (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Rg<CR>"
+
+nnoremap <silent> <expr> <C-g>     (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Files<cr>"
+nnoremap <silent> <expr> <Leader>l (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Buffers<CR>"
+nnoremap <silent> <expr> <Leader>t (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":BTags<CR>"
+nnoremap <silent> <expr> <Leader>m (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Rg<CR>"
 let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
 let $FZF_DEFAULT_OPTS=" --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
 
@@ -211,21 +204,19 @@ augroup CocGroup
 augroup end
 
 
-inoremap <silent><expr> <TAB>
-    \ pumvisible() ? "\<C-n>" : (<SID>check_back_space() ? "\<TAB>" : coc#refresh())
-inoremap <expr><S-TAB>
-    \ pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <silent><expr> <TAB> (pumvisible() ? "\<C-n>" : (<SID>check_back_space() ? "\<TAB>" : coc#refresh()))
+inoremap <expr><S-TAB> (pumvisible() ? "\<C-p>" : "\<C-h>")
 function! s:check_back_space() abort
     let col = col('.') - 1
     return !col || getline('.')[col - 1] =~# '\s'
 endfunction
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nmap <leader>rn  <Plug>(coc-rename)
+nnoremap <silent> [g <Plug>(coc-diagnostic-prev)
+nnoremap <silent> ]g <Plug>(coc-diagnostic-next)
+nnoremap <silent> gd <Plug>(coc-definition)
+nnoremap <silent> gy <Plug>(coc-type-definition)
+nnoremap <silent> gi <Plug>(coc-implementation)
+nnoremap <silent> gr <Plug>(coc-references)
+nnoremap <leader>rn  <Plug>(coc-rename)
 nnoremap <silent> K :call <SID>call CocAction('doHover')<CR>
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
@@ -251,7 +242,7 @@ let g:go_echo_go_info=0
 
 
 
-map <Leader>p <Plug>(Prettier):retab <CR>
+nnoremap <Leader>p <Plug>(Prettier):retab <CR>
 
 
 
@@ -261,7 +252,7 @@ function! DoingEasyMotion()
   let cancelled = EasyMotion#WB(0,2)
   let g:is_doing_easymotion = 0
 endfunction
-nmap f :call DoingEasyMotion()<CR>
+nnoremap f :call DoingEasyMotion()<CR>
 autocmd User EasyMotionPromptBegin silent! CocDisable
 autocmd User EasyMotionPromptEnd silent! CocEnable
 
@@ -291,7 +282,6 @@ nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
 nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
 nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
-
 if filereadable(".tags")
     set tags=.tags
 else
@@ -317,42 +307,37 @@ autocmd FileType vista,NvimTree noremap <buffer> <Leader>w <nop>
 """""""""""""""""""""""""""""""""""""""
 
 nnoremap J mzJ`z
-noremap H ^
-noremap L $
+nnoremap H ^
+nnoremap L $
 vnoremap L g_
 
 nnoremap <C-m> %
 vnoremap <C-m> %
 
-noremap <silent> <C-h> :bprev<CR>
-noremap <silent> <C-l> :bnext<CR>
-nnoremap <silent> <Leader>q :Bclose<CR>
-nnoremap <silent> <Leader>x <C-w>c
+nnoremap <C-h>      :bprev<CR>
+nnoremap <C-l>      :bnext<CR>
+nnoremap <Leader>q  :Bclose<CR>
+nnoremap <Leader>x  <C-w>c
 
-nnoremap <Leader>L :set invnumber<CR>
+nnoremap <Leader>L  :set invnumber<CR>
+nnoremap <Leader>T  :%s/\s\+$//<CR>
+nnoremap <Leader>U  :g/^$/d<CR>
+nnoremap <Leader>R  :retab<CR>
+nnoremap <Leader>.  :@:<CR>
+nnoremap <Leader>ev :e $MYVIMRC<CR>
+nnoremap <Leader>es :so $MYVIMRC<CR>
+nnoremap <leader>b  :nohlsearch<CR>
+nnoremap <Leader>=  :wincmd =<CR>
+nnoremap <Leader>c  :let @+=expand('%:p')<CR>
 
-nnoremap <Leader>T :%s/\s\+$//<CR>
-nnoremap <Leader>U :g/^$/d<CR>
-nnoremap <Leader>R :retab<CR>
-nnoremap <Leader>. :@:<CR>
-nnoremap <silent> <Leader>ev :e $MYVIMRC<CR>
-nnoremap <silent> <Leader>es :so $MYVIMRC<CR>
-nnoremap <silent> <leader>b :nohlsearch<CR>
-nnoremap <Leader>= :wincmd =<CR>
-nnoremap <Leader>c :let @+=expand('%:p')<CR>
-
-nmap S :%sno##g<LEFT><LEFT>
-vnoremap <C-r> "hy:%sno#<C-r>h##gc<left><left><left>
 
 " map C-j in all modes to save buffer
 noremap  <C-j>      :w<CR>
 noremap! <C-j> <ESC>:w<CR>
 noremap  <Leader>w  :w<CR>
 
-noremap <C-t> :b#<CR>
-
-" map C-y in insert modes to paste
-inoremap <C-y> <C-r>"
+vnoremap <C-r> "hy:%sno#<C-r>h##gc<left><left><left>
+nnoremap S     :%sno##g<LEFT><LEFT>
 
 nnoremap m <C-d>
 nnoremap , <C-u>
@@ -415,6 +400,9 @@ function! MyHighlights() abort
     hi LineNr                                                                   ctermbg=NONE
     hi Normal                                               ctermbg=234
 
+    hi CursorLine                                           cterm=none ctermfg=10 ctermbg=234
+
+
     " for gui
     hi Search                       gui=NONE                guifg=black         guibg=goldenrod2
     hi SpellCap                                             guifg=black         guibg=springgreen
@@ -430,6 +418,9 @@ function! MyHighlights() abort
     hi multiple_cursors_visual                              guifg=black         guibg=white
     hi LineNr                                                                   guibg=NONE
     hi Normal                                                                   guibg=#1c1c1c
+
+    hi CursorLine                                           guifg=springgreen
+
 endfunction
 
 augroup MyColors
