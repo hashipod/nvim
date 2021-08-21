@@ -9,8 +9,10 @@ let mapleader = "\<Space>"
 call plug#begin('~/.nvim/plugged')
 
 Plug 'kyazdani42/nvim-tree.lua'
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neovim/nvim-lspconfig'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'folke/trouble.nvim'
+
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 
@@ -117,42 +119,6 @@ let g:nvim_tree_icons = {
 nnoremap <Leader>n :NvimTreeToggle<CR>
 nnoremap <leader>r :NvimTreeRefresh<CR>
 nnoremap @ :NvimTreeFindFile<CR>
-lua <<EOF
-    local tree_cb = require'nvim-tree.config'.nvim_tree_callback
-    vim.g.nvim_tree_bindings = {
-      ["sv"]             = tree_cb("vsplit"),
-      ["ss"]             = tree_cb("split"),
-      [">"]              = ':exe "vertical resize +10"<CR>',  -- default was next_sibling
-      ["<"]              = ':exe "vertical resize -10"<CR>',  -- default was prev_sibling
-      ["H"]              = '^',                               -- default was toggle_dotfiles
-      ["[p"]             = tree_cb("prev_sibling"),
-      ["]n"]             = tree_cb("next_sibling"),
-      ["f"]              = tree_cb("toggle_dotfiles"),
-      -- default mappings
-      ["<CR>"]           = tree_cb("edit"),
-      ["o"]              = tree_cb("edit"),
-      ["<C-]>"]          = tree_cb("cd"),
-      ["<C-t>"]          = tree_cb("tabnew"),
-      ["<BS>"]           = tree_cb("close_node"),
-      ["<S-CR>"]         = tree_cb("close_node"),
-      ["<Tab>"]          = "",
-      ["I"]              = tree_cb("toggle_ignored"),
-      ["R"]              = tree_cb("refresh"),
-      ["a"]              = tree_cb("create"),
-      ["d"]              = tree_cb("remove"),
-      ["r"]              = tree_cb("rename"),
-      ["<C-r>"]          = tree_cb("full_rename"),
-      ["x"]              = tree_cb("cut"),
-      ["c"]              = tree_cb("copy"),
-      ["p"]              = tree_cb("paste"),
-      ["[c"]             = tree_cb("prev_git_item"),
-      ["]c"]             = tree_cb("next_git_item"),
-      ["-"]              = tree_cb("dir_up"),
-      ["q"]              = tree_cb("close"),
-    }
-EOF
-
-
 
 
 let g:airline#extensions#tabline#enabled = 1
@@ -192,7 +158,6 @@ nnoremap <Leader>o :Vista!! <CR>
 
 
 
-
 """ see https://github.com/neovim/nvim-lspconfig#Keybindings-and-completion
 lua << EOF
 local nvim_lsp = require('lspconfig')
@@ -209,17 +174,17 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
   buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', '<space>Gwa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>Gwr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>Gwl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>GD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>Grn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>Gca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '<space>Ge', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap('n', '<space>Gq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 
   -- Set some keybinds conditional on server capabilities
   if client.resolved_capabilities.document_formatting then
@@ -243,11 +208,27 @@ end
 
 -- Use a loop to conveniently both setup defined servers 
 -- and map buffer local keybindings when the language server attaches
-local servers = { "gopls" }
+local servers = { "gopls", "clangd" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup { on_attach = on_attach }
 end
 EOF
+
+
+
+
+lua << EOF
+  require("trouble").setup {}
+EOF
+nnoremap <leader>exx <cmd>TroubleToggle<cr>
+nnoremap <leader>exw <cmd>TroubleToggle lsp_workspace_diagnostics<cr>
+nnoremap <leader>exd <cmd>TroubleToggle lsp_document_diagnostics<cr>
+nnoremap <leader>exq <cmd>TroubleToggle quickfix<cr>
+nnoremap <leader>exl <cmd>TroubleToggle loclist<cr>
+nnoremap gR <cmd>TroubleToggle lsp_references<cr>
+
+
+
 
 
 
@@ -258,48 +239,6 @@ set shortmess+=c   " Shut off completion messages
 set belloff+=ctrlg " If Vim beeps during completion
 let g:mucomplete#enable_auto_at_startup = 1
 let g:mucomplete#completion_delay = 1
-
-
-
-
-
-"    let g:my_coc_file_types = ['go', 'c', 'cpp', 'h', 'asm', 'hpp', 'vim', 'sh', 'py']
-"    function! s:disable_coc_for_type()
-"        if index(g:my_coc_file_types, &filetype) == -1
-"            let b:coc_enabled = 0
-"        else
-"            let b:coc_enabled = 1
-"        endif
-"    endfunction
-"    function! s:lsp_maybe_highlight() abort
-"      call CocActionAsync('highlight')
-"    endfunction
-"    augroup CocGroup
-"        autocmd!
-"        autocmd BufNew,BufEnter *    call s:disable_coc_for_type()
-"        autocmd CursorMoved * silent call s:lsp_maybe_highlight()
-"    augroup end
-
-"    " Use <c-space> to trigger completion.
-"    inoremap <silent><expr> <c-space> coc#refresh()
-"    inoremap <silent><expr> <TAB> (pumvisible() ? "\<C-n>" : (<SID>check_back_space() ? "\<TAB>" : coc#refresh()))
-"    inoremap <expr><S-TAB> (pumvisible() ? "\<C-p>" : "\<C-h>")
-"    function! s:check_back_space() abort
-"        let col = col('.') - 1
-"        return !col || getline('.')[col - 1] =~# '\s'
-"    endfunction
-"    nnoremap [g <Plug>(coc-diagnostic-prev)
-"    nnoremap ]g <Plug>(coc-diagnostic-next)
-"    nnoremap gd <Plug>(coc-definition)
-"    nnoremap gy <Plug>(coc-type-definition)
-"    nnoremap gi <Plug>(coc-implementation)
-"    nnoremap gr <Plug>(coc-references)
-"    nnoremap K :call <SID>call CocAction('doHover')<CR>
-"    nnoremap <leader>rn  <Plug>(coc-rename)
-"    set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
-
-
 
 
 
@@ -389,8 +328,12 @@ vnoremap L g_
 nnoremap <C-m> %
 vnoremap <C-m> %
 
-nnoremap <C-h>      :bprev<CR>
-nnoremap <C-l>      :bnext<CR>
+
+nnoremap <M-h>      :bprev<CR>
+nnoremap <M-l>      :bnext<CR>
+" nnoremap <C-h>      :bprev<CR>
+" nnoremap <C-l>      :bnext<CR>
+
 nnoremap <Leader>q  :Bclose<CR>
 nnoremap <Leader>x  <C-w>c
 
@@ -464,8 +407,8 @@ function! MyHighlights() abort
     hi Search                       cterm=none              ctermfg=232         ctermbg=214
     hi SpellCap                                             ctermfg=black       ctermbg=green
     hi LspReferenceText                                     ctermfg=black       ctermbg=green
-    hi CocHighlightText                                     ctermfg=black       ctermbg=green
     hi LspDiagnosticsError                                  ctermfg=cyan
+    hi LspDiagnosticsVirtualTextError 			    ctermfg=red
     hi SignColumn                                           ctermfg=white       ctermbg=black
     hi Whitespace                                           ctermfg=DarkGray
     hi ALEError                     cterm=underline,bold    ctermfg=red
@@ -485,6 +428,7 @@ function! MyHighlights() abort
     hi LspReferenceText                                     guifg=black         guibg=limegreen
     hi CocHighlightText                                     guifg=black         guibg=limegreen
     hi LspDiagnosticsError                                  guifg=cyan
+    hi LspDiagnosticsVirtualTextError 			    guifg=red
     hi SignColumn                                           guifg=white
     hi Whitespace                                           guifg=DarkSlateGray
     hi ALEError                     gui=underline,bold      guifg=red
@@ -526,6 +470,11 @@ autocmd BufNewFile,BufRead *.webapp set filetype=json
 autocmd BufNewFile,BufRead *.jshintrc set filetype=json
 autocmd BufNewFile,BufRead *.eslintrc set filetype=json
 autocmd BufNewFile,BufReadPost *.go set shiftwidth=4 softtabstop=4 expandtab!
+autocmd BufNewFile,BufReadPost *.cpp set shiftwidth=8 tabstop=8 softtabstop=8
+autocmd BufNewFile,BufReadPost *.cc  set shiftwidth=8 tabstop=8 softtabstop=8
+autocmd BufNewFile,BufReadPost *.c   set shiftwidth=8 tabstop=8 softtabstop=8
+autocmd BufNewFile,BufReadPost *.hh  set shiftwidth=8 tabstop=8 softtabstop=8
+autocmd BufNewFile,BufReadPost *.h   set shiftwidth=8 tabstop=8 softtabstop=8
 autocmd BufNewFile,BufReadPost *.coffee set shiftwidth=2 softtabstop=2
 autocmd BufNewFile,BufRead *.coffee set filetype=coffee
 autocmd BufWritePost *.coffee silent make!
