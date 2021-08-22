@@ -12,6 +12,7 @@ Plug 'kyazdani42/nvim-tree.lua'
 Plug 'neovim/nvim-lspconfig'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'folke/trouble.nvim'
+" Plug 'kevinhwang91/nvim-bqf'
 
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -154,6 +155,7 @@ augroup END
 
 
 nnoremap <Leader>o :Vista!! <CR>
+let g:vista_echo_cursor_strategy = 'floating_win'
 
 
 
@@ -321,8 +323,9 @@ autocmd FileType vista,NvimTree noremap <buffer> <Leader>w <nop>
 """""""""""""""""""""""""""""""""""""""
 
 nnoremap J mzJ`z
-noremap H ^
-noremap L $
+nnoremap H ^
+nnoremap L $
+vnoremap H ^
 vnoremap L g_
 
 nnoremap <C-m> %
