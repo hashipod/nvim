@@ -324,8 +324,8 @@ autocmd FileType vista,NvimTree noremap <buffer> <Leader>w <nop>
 """""""""""""""""""""""""""""""""""""""
 
 nnoremap J mzJ`z
-nnoremap H ^
-nnoremap L $
+noremap H ^
+noremap L $
 vnoremap H ^
 vnoremap L g_
 
