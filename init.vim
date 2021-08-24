@@ -12,7 +12,7 @@ Plug 'kyazdani42/nvim-tree.lua'
 Plug 'neovim/nvim-lspconfig'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'folke/trouble.nvim'
-" Plug 'kevinhwang91/nvim-bqf'
+Plug 'kevinhwang91/nvim-bqf'
 
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
