@@ -338,7 +338,7 @@ nnoremap <M-l>      :bnext<CR>
 " nnoremap <C-h>      :bprev<CR>
 " nnoremap <C-l>      :bnext<CR>
 
-nnoremap <Leader>q  :Bclose<CR>
+nnoremap <Leader>k  :Bclose<CR>
 nnoremap <Leader>x  <C-w>c
 
 nnoremap <Leader>L  :set invnumber<CR>
