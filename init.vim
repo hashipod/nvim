@@ -191,11 +191,11 @@ local on_attach = function(client, bufnr)
 
   -- Set some keybinds conditional on server capabilities
   if client.resolved_capabilities.document_formatting then
-    buf_set_keymap("n", "<space>=", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    buf_set_keymap("n", "<space>[", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
   end
-  if client.resolved_capabilities.document_range_formatting then
-    buf_set_keymap("v", "<space>-=", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
-  end
+  -- if client.resolved_capabilities.document_range_formatting then
+  --   buf_set_keymap("v", "<space>-=", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
+  -- end
 
   -- Set autocommands conditional on server_capabilities
   if client.resolved_capabilities.document_highlight then
@@ -369,8 +369,9 @@ nnoremap ' zt<C-y>
 
 vnoremap // y/<C-R>"<CR>"
 
-vnoremap p "_dp
-vnoremap P "_dP
+vnoremap p     "_dp
+vnoremap <C-p> "_dP
+nnoremap <C-p> P
 
 
 nnoremap th  :tabfirst<CR>
