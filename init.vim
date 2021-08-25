@@ -333,10 +333,10 @@ nnoremap <C-m> %
 vnoremap <C-m> %
 
 
-nnoremap <M-h>      :bprev<CR>
-nnoremap <M-l>      :bnext<CR>
-" nnoremap <C-h>      :bprev<CR>
-" nnoremap <C-l>      :bnext<CR>
+" nnoremap <M-h>      :bprev<CR>
+" nnoremap <M-l>      :bnext<CR>
+nnoremap <C-h>      :bprev<CR>
+nnoremap <C-l>      :bnext<CR>
 
 nnoremap <Leader>k  :Bclose<CR>
 nnoremap <Leader>x  <C-w>c
