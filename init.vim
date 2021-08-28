@@ -234,6 +234,21 @@ local on_attach = function(client, bufnr)
   end
 end
 
+
+
+
+local orig_handler = vim.lsp.handlers["textDocument/publishDiagnostics"]
+vim.lsp.handlers["textDocument/publishDiagnostics"] = function(...)
+  local status, value = pcall(vim.api.nvim_get_var, "is_doing_easymotion")
+  if status == true and value == 1 then
+    return
+  end
+  orig_handler(...)
+end
+
+
+
+
 -- Use a loop to conveniently both setup defined servers 
 -- and map buffer local keybindings when the language server attaches
 local servers = { "gopls", "clangd" }
@@ -244,7 +259,7 @@ EOF
 
 
 
-" nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+
 
 lua << EOF
   require("which-key").setup { }
