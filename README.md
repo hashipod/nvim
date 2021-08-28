@@ -10,13 +10,11 @@ NeoVim configuration, use vim-plug to manage plugins.
 
 ```
 # clone this repo
-mkdir -p ~/.config && cd ~/.config && git clone --depth 1 https://github.com/jieteki/nvim.git
+mkdir -p ~/.config && cd ~/.config && git clone --depth 1 https://github.com/sekirocc/nvim.git
 
 # install vim-plug
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-# install fd, SEE https://github.com/sharkdp/fd
-# brew install fd
 
 # install python2 & python3 support
 python3 -m pip install --user --upgrade pynvim
@@ -26,22 +24,13 @@ python2 -m pip install --user --upgrade pynvim
 nvim +PlugInstall +qall
 ```
 
-```
-# install coc extensions
-CocInstall coc-snippets coc-highlight coc-json coc-go coc-clangd
-```
-
 
 ```
-# Install tools(rg, ctags)
+# Install tools(fd, ag/rg, fzf)
 #
-# 1. using snapd
+# some advice:
 # snap install ripgrep --classic
-# snap install universal-ctags --classic
-#
-# 2. or using homebrew
-# brew tap universal-ctags/universal-ctags
-# brew install --with-jansson --HEAD universal-ctags/universal-ctags/universal-ctags
+# brew install fd
 ```
 
 # plugins will be installed in ~/.nvim
@@ -56,20 +45,10 @@ nvim +GoInstallBinaries
 ```
 
 ## For cpp
-
-coc-clangd already installed clangd
-
-clangd need `compile_commands.json` at project root,
-add this line in your CMakeLists.txt, for generating `compile_commands.json` file.
-
 ```
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+install clangd
 ```
 
-make a softlink in project root.
-```
-ln -s path/to/compile_commands.json .
-```
 
 ## For cscope
 
@@ -77,6 +56,11 @@ first install cscope & ctags
 ```
 # 1. pacman
 pacman -Sy cscope ctags
+#
+#
+# snap install universal-ctags --classic
+# brew tap universal-ctags/universal-ctags
+# brew install --with-jansson --HEAD universal-ctags/universal-ctags/universal-ctags
 ```
 
 use this script to generate cscope files
