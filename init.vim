@@ -43,6 +43,11 @@ Plug 'flazz/vim-colorschemes'
 Plug 'itchyny/lightline.vim'
 Plug 'mengelbrecht/lightline-bufferline'
 
+Plug 'folke/which-key.nvim'
+Plug 'mhinz/vim-startify'
+
+
+
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-fugitive'
 
@@ -235,6 +240,14 @@ local servers = { "gopls", "clangd" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup { on_attach = on_attach }
 end
+EOF
+
+
+
+" nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+
+lua << EOF
+  require("which-key").setup { }
 EOF
 
 
