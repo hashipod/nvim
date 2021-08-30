@@ -45,6 +45,7 @@ Plug 'mengelbrecht/lightline-bufferline'
 
 Plug 'folke/which-key.nvim'
 Plug 'mhinz/vim-startify'
+Plug 'airblade/vim-rooter'
 
 
 
@@ -60,6 +61,10 @@ Plug 'lifepillar/vim-mucomplete'
 
 call plug#end()
 
+
+augroup vimrc_rooter
+    autocmd VimEnter * :Rooter
+augroup END
 
 
 
