@@ -29,8 +29,14 @@ nvim +PlugInstall +qall
 # Install tools(fd, ag/rg, fzf)
 #
 # some advice:
-# snap install ripgrep --classic
-# brew install fd
+snap install ripgrep --classic
+brew install fd
+
+#
+# install nerd font
+brew tap homebrew/cask-fonts
+brew install font-dejavu-sans-mono-nerd-font
+
 ```
 
 # plugins will be installed in ~/.nvim

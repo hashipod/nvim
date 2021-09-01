@@ -8,12 +8,12 @@ let mapleader = "\<Space>"
 
 call plug#begin('~/.nvim/plugged')
 
-Plug 'kyazdani42/nvim-tree.lua'
-Plug 'neovim/nvim-lspconfig'
 Plug 'kyazdani42/nvim-web-devicons'
+Plug 'kyazdani42/nvim-tree.lua'
+
+Plug 'neovim/nvim-lspconfig'
 Plug 'folke/trouble.nvim'
 Plug 'kevinhwang91/nvim-bqf'
-
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 
@@ -38,8 +38,6 @@ Plug 'elzr/vim-json'
 
 Plug 'flazz/vim-colorschemes'
 
-" Plug 'vim-airline/vim-airline'
-" Plug 'vim-airline/vim-airline-themes'
 Plug 'itchyny/lightline.vim'
 Plug 'mengelbrecht/lightline-bufferline'
 
@@ -99,38 +97,6 @@ let $FZF_DEFAULT_OPTS=" --preview 'bat --color=always --style=header,grid --line
 
 
 
-
-let g:nvim_tree_ignore = [ '.git', 'node_modules', '.cache' ] "empty by default
-let g:nvim_tree_gitignore = 1
-let g:nvim_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DIR` or `vim`
-let g:nvim_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
-let g:nvim_tree_follow = 0 "0 by default, this option allows the cursor to be updated when entering a buffer
-let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
-let g:nvim_tree_hide_dotfiles = 1 "0 by default, this option hides files and folders starting with a dot `.`
-let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
-let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
-let g:nvim_tree_tab_open = 1 "0 by default, will open the tree when entering a new tab and the tree was previously open
-let g:nvim_tree_width_allow_resize = v:true
-let g:nvim_tree_show_icons = {
-    \ 'git': 0,
-    \ 'folders': 1,
-    \ 'files': 0,
-    \}
-let g:nvim_tree_icons = {
-    \ 'default': '  ',
-    \ 'symlink': '  ',
-    \ 'git': {
-    \   'unstaged': "✗",
-    \   'staged': "✓",
-    \   'unmerged': " ",
-    \   'renamed': "➜",
-    \   'untracked': "★"
-    \   },
-    \ 'folder': {
-    \   'default': "+",
-    \   'open': "-"
-    \  }
-    \ }
 nnoremap <Leader>n :NvimTreeToggle<CR>
 nnoremap <leader>r :NvimTreeRefresh<CR>
 nnoremap @ :NvimTreeFindFile<CR>
@@ -323,8 +289,6 @@ function! DoingEasyMotion()
   let g:is_doing_easymotion = 0
 endfunction
 nnoremap f :call DoingEasyMotion()<CR>
-autocmd User EasyMotionPromptBegin silent! CocDisable
-autocmd User EasyMotionPromptEnd silent! CocEnable
 
 
 
@@ -372,6 +336,24 @@ autocmd FileType vista,NvimTree noremap <buffer> <Leader>w <nop>
 
 
 
+let g:rust_fold = 1
+let g:perl_fold = 1
+let g:python_fold = 1
+let g:erlang_fold = 1
+let g:go_fold = 1
+let g:fastfold_fold_command_suffixes =  ['x','X','a','A']
+let g:fastfold_savehook = 0
+let g:vim_markdown_folding_disabled = 1
+
+
+
+let g:vim_json_syntax_conceal = 0
+" let g:indentLine_setConceal = 0
+
+
+
+
+
 """""""""""""""""""""""""""""""""""""""
 """""""" Settings for Mappings """""""""
 """""""""""""""""""""""""""""""""""""""
@@ -386,8 +368,6 @@ nnoremap <C-m> %
 vnoremap <C-m> %
 
 
-" nnoremap <M-h>      :bprev<CR>
-" nnoremap <M-l>      :bnext<CR>
 nnoremap <C-h>      :bprev<CR>
 nnoremap <C-l>      :bnext<CR>
 
@@ -399,8 +379,8 @@ nnoremap <Leader>T  :%s/\s\+$//<CR>
 nnoremap <Leader>U  :g/^$/d<CR>
 nnoremap <Leader>R  :retab<CR>
 nnoremap <Leader>.  :@:<CR>
-nnoremap <Leader>ev :e $MYVIMRC<CR>
-nnoremap <Leader>es :so $MYVIMRC<CR>
+" nnoremap <Leader>ev :e $MYVIMRC<CR>
+" nnoremap <Leader>es :so $MYVIMRC<CR>
 nnoremap <leader>b  :nohlsearch<CR>
 " nnoremap <Leader>=  :wincmd =<CR>
 nnoremap <Leader>c  :let @+=expand('%:p')<CR>
@@ -439,7 +419,6 @@ nnoremap td  :tabclose<CR>
 
 set wildmenu wildmode=full
 set wildchar=<Tab> wildcharm=<C-Z>
-noremap <C-q> <C-y>
 
 command! Jsonf :execute '%!python2 -m json.tool'
   \ | :execute '%!python2 -c "import re,sys;sys.stdout.write(re.sub(r\"\\\u[0-9a-f]{4}\", lambda m:m.group().decode(\"unicode_escape\").encode(\"utf-8\"), sys.stdin.read()))"'
@@ -455,8 +434,8 @@ inoremap <C-t> <C-o>O
 
 
 
-nnoremap <silent> >  :exe "vertical resize +10"<CR>
-nnoremap <silent> <  :exe "vertical resize -10"<CR>
+nnoremap <silent> >  :exe "vertical resize +20"<CR>
+nnoremap <silent> <  :exe "vertical resize -20"<CR>
 
 
 
@@ -466,11 +445,9 @@ function! MyHighlights() abort
     hi SpellCap                                             ctermfg=black       ctermbg=green
     hi LspReferenceText                                     ctermfg=black       ctermbg=green
     hi LspDiagnosticsError                                  ctermfg=cyan
-    hi LspDiagnosticsVirtualTextError 			    ctermfg=red
+    hi LspDiagnosticsVirtualTextError                       ctermfg=red
     hi SignColumn                                           ctermfg=white       ctermbg=black
     hi Whitespace                                           ctermfg=DarkGray
-    hi ALEError                     cterm=underline,bold    ctermfg=red
-    hi ALEWarning                   cterm=underline,bold    ctermfg=red
     hi VertSplit                                            ctermfg=green       ctermbg=black
     hi multiple_cursors_cursor                              ctermfg=green       ctermbg=red
     hi multiple_cursors_visual                              ctermfg=black       ctermbg=white
@@ -486,11 +463,9 @@ function! MyHighlights() abort
     hi LspReferenceText                                     guifg=black         guibg=limegreen
     hi CocHighlightText                                     guifg=black         guibg=limegreen
     hi LspDiagnosticsError                                  guifg=cyan
-    hi LspDiagnosticsVirtualTextError 			    guifg=red
+    hi LspDiagnosticsVirtualTextError                       guifg=red
     hi SignColumn                                           guifg=white
     hi Whitespace                                           guifg=DarkSlateGray
-    hi ALEError                     gui=underline,bold      guifg=red
-    hi ALEWarning                   gui=underline,bold      guifg=red
     hi VertSplit                                            guifg=springgreen   guibg=NONE
     hi multiple_cursors_cursor                              guifg=springgreen   guibg=red
     hi multiple_cursors_visual                              guifg=black         guibg=white
@@ -549,18 +524,6 @@ autocmd BufNewFile,BufReadPost *.json set shiftwidth=4 softtabstop=4
 
 
 
-let g:rust_fold = 1
-let g:perl_fold = 1
-let g:python_fold = 1
-let g:erlang_fold = 1
-let g:go_fold = 1
-let g:fastfold_fold_command_suffixes =  ['x','X','a','A']
-let g:fastfold_savehook = 0
-let g:vim_markdown_folding_disabled = 1
-let g:vim_json_syntax_conceal = 0
-let g:indentLine_setConceal = 0
-
-
 
 """""""""""""""""""""""""""""""""""""""
 """""""""
@@ -571,7 +534,6 @@ let g:indentLine_setConceal = 0
 set splitbelow
 set splitright
 set cursorline
-" reduce cursor hold time to 500s
 set updatetime=500
 
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×
