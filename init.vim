@@ -452,7 +452,7 @@ function! MyHighlights() abort
     hi VertSplit                                            ctermfg=green       ctermbg=black
     hi multiple_cursors_cursor                              ctermfg=green       ctermbg=red
     hi multiple_cursors_visual                              ctermfg=black       ctermbg=white
-    hi LineNr                                                                   ctermbg=NONE
+    " hi LineNr                                                                   ctermbg=NONE
     " hi Normal                                               ctermbg=234
 
     " hi CursorLine                                           cterm=none          ctermbg=234
@@ -470,7 +470,7 @@ function! MyHighlights() abort
     hi VertSplit                                            guifg=springgreen   guibg=NONE
     hi multiple_cursors_cursor                              guifg=springgreen   guibg=red
     hi multiple_cursors_visual                              guifg=black         guibg=white
-    hi LineNr                                                                   guibg=NONE
+    " hi LineNr                                                                   guibg=NONE
     " hi Normal                                                                   guibg=#1c1c1c
 
     " hi CursorLine                                                               guibg=black
@@ -486,6 +486,10 @@ if has("termguicolors")
     set termguicolors
 endif
 " colorscheme space-vim-dark
+
+let g:tokyonight_style = "night"
+let g:tokyonight_italic_functions = 1
+let g:tokyonight_sidebars = [ "qf", "vista_kind", "terminal", "packer" ]
 colorscheme tokyonight
 
 
