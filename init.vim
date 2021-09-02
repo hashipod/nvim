@@ -37,6 +37,7 @@ Plug 'rust-lang/rust.vim'
 Plug 'elzr/vim-json'
 
 Plug 'flazz/vim-colorschemes'
+Plug 'folke/tokyonight.nvim'
 
 Plug 'itchyny/lightline.vim'
 Plug 'mengelbrecht/lightline-bufferline'
@@ -105,7 +106,7 @@ nnoremap @ :NvimTreeFindFile<CR>
 
 set showtabline=2
 let g:lightline = {
-      \ 'colorscheme': 'one',
+      \ 'colorscheme': 'tokyonight',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'filename', 'modified' ] ]
       \ },
@@ -444,35 +445,35 @@ function! MyHighlights() abort
     hi Search                       cterm=none              ctermfg=232         ctermbg=214
     hi SpellCap                                             ctermfg=black       ctermbg=green
     hi LspReferenceText                                     ctermfg=black       ctermbg=green
-    hi LspDiagnosticsError                                  ctermfg=cyan
-    hi LspDiagnosticsVirtualTextError                       ctermfg=red
+    " hi LspDiagnosticsError                                  ctermfg=cyan
+    " hi LspDiagnosticsVirtualTextError                       ctermfg=red
     hi SignColumn                                           ctermfg=white       ctermbg=black
-    hi Whitespace                                           ctermfg=DarkGray
+    " hi Whitespace                                           ctermfg=DarkGray
     hi VertSplit                                            ctermfg=green       ctermbg=black
     hi multiple_cursors_cursor                              ctermfg=green       ctermbg=red
     hi multiple_cursors_visual                              ctermfg=black       ctermbg=white
     hi LineNr                                                                   ctermbg=NONE
-    hi Normal                                               ctermbg=234
+    " hi Normal                                               ctermbg=234
 
-    hi CursorLine                                           cterm=none          ctermbg=234
+    " hi CursorLine                                           cterm=none          ctermbg=234
 
 
     " for gui
     hi Search                       gui=NONE                guifg=black         guibg=goldenrod2
     hi SpellCap                                             guifg=black         guibg=springgreen
     hi LspReferenceText                                     guifg=black         guibg=limegreen
-    hi CocHighlightText                                     guifg=black         guibg=limegreen
-    hi LspDiagnosticsError                                  guifg=cyan
-    hi LspDiagnosticsVirtualTextError                       guifg=red
+    " hi CocHighlightText                                     guifg=black         guibg=limegreen
+    " hi LspDiagnosticsError                                  guifg=cyan
+    " hi LspDiagnosticsVirtualTextError                       guifg=red
     hi SignColumn                                           guifg=white
-    hi Whitespace                                           guifg=DarkSlateGray
+    " hi Whitespace                                           guifg=DarkSlateGray
     hi VertSplit                                            guifg=springgreen   guibg=NONE
     hi multiple_cursors_cursor                              guifg=springgreen   guibg=red
     hi multiple_cursors_visual                              guifg=black         guibg=white
     hi LineNr                                                                   guibg=NONE
-    hi Normal                                                                   guibg=#1c1c1c
+    " hi Normal                                                                   guibg=#1c1c1c
 
-    hi CursorLine                                                               guibg=black
+    " hi CursorLine                                                               guibg=black
 
 endfunction
 
@@ -484,7 +485,8 @@ augroup END
 if has("termguicolors")
     set termguicolors
 endif
-colorscheme space-vim-dark
+" colorscheme space-vim-dark
+colorscheme tokyonight
 
 
 
