@@ -38,6 +38,8 @@ Plug 'elzr/vim-json'
 
 Plug 'flazz/vim-colorschemes'
 Plug 'folke/tokyonight.nvim'
+Plug 'wojciechkepka/bogster'
+
 
 Plug 'itchyny/lightline.vim'
 Plug 'mengelbrecht/lightline-bufferline'
@@ -486,11 +488,13 @@ if has("termguicolors")
     set termguicolors
 endif
 " colorscheme space-vim-dark
+" colorscheme bogster
 
 let g:tokyonight_style = "night"
 let g:tokyonight_italic_functions = 1
 let g:tokyonight_sidebars = [ "qf", "vista_kind", "terminal", "packer" ]
 colorscheme tokyonight
+
 
 
 
