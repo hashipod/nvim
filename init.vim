@@ -91,8 +91,8 @@ function! CreateCenteredFloatingWindow()
     au BufWipeout <buffer> exe 'bw '.s:buf
 endfunction
 
-nnoremap <silent> <expr> <C-g>     (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Files<cr>"
-nnoremap <silent> <expr> <Leader>l (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Buffers<CR>"
+nnoremap <silent> <expr> <Leader>f (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Files<cr>"
+nnoremap <silent> <expr> <Leader>b (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Buffers<CR>"
 nnoremap <silent> <expr> <Leader>t (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":BTags<CR>"
 nnoremap <silent> <expr> <Leader>m (expand('%') =~ 'NvimTree' ? "\<c-w>\<c-w>" : '').":Rg<CR>"
 let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
@@ -121,16 +121,28 @@ let g:lightline = {
       \ },
       \ 'component_type': {
       \   'buffers': 'tabsel'
+      \ },
+      \ 'component_function': {
+      \   'filename': 'LightlineTruncatedFileName'
       \ }
       \ }
+
+function! LightlineTruncatedFileName()
+let l:filePath = expand('%')
+    if winwidth(0) > 100
+        return l:filePath
+    else
+        return pathshorten(l:filePath)
+    endif
+endfunction
 autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
 
 
 
-nnoremap <leader>a :CtrlSF
-nnoremap <leader>s :CtrlSFOpen <CR>
-nnoremap <Leader>f yiw :CtrlSF "<C-R>""<CR>
-vnoremap <Leader>a y<ESC> :CtrlSF "<C-R>""
+nnoremap <leader>p yiw :CtrlSF "<C-R>""
+nnoremap <leader>o :CtrlSFOpen <CR>
+" nnoremap <Leader>j yiw :CtrlSF "<C-R>""<CR>
+vnoremap <Leader>p y<ESC> :CtrlSF "<C-R>""
 let g:ctrlsf_auto_focus = { "at": "start" }
 let g:ctrlsf_search_mode = 'async'
 let g:ctrlsf_extra_backend_args = {'rg': '--no-ignore'}
@@ -153,7 +165,7 @@ augroup END
 
 
 
-nnoremap <Leader>o :Vista!! <CR>
+nnoremap <Leader>v :Vista!! <CR>
 let g:vista_echo_cursor_strategy = 'floating_win'
 
 
@@ -281,7 +293,7 @@ let g:go_echo_go_info=0
 
 
 
-nnoremap <Leader>p <Plug>(Prettier):retab <CR>
+nnoremap <Leader>R <Plug>(Prettier):retab <CR>
 
 
 
@@ -362,10 +374,10 @@ let g:vim_json_syntax_conceal = 0
 """""""""""""""""""""""""""""""""""""""
 
 nnoremap J mzJ`z
-noremap H ^
-noremap L $
-vnoremap H ^
-vnoremap L g_
+noremap  gh ^
+noremap  gl $
+vnoremap gh ^
+vnoremap gl g_
 
 nnoremap <C-m> %
 vnoremap <C-m> %
@@ -376,6 +388,7 @@ nnoremap <C-l>      :bnext<CR>
 
 nnoremap <Leader>k  :Bclose<CR>
 nnoremap <Leader>x  <C-w>c
+nnoremap <Leader>w  <C-w>
 
 nnoremap <Leader>L  :set invnumber<CR>
 nnoremap <Leader>T  :%s/\s\+$//<CR>
@@ -384,7 +397,7 @@ nnoremap <Leader>R  :retab<CR>
 nnoremap <Leader>.  :@:<CR>
 " nnoremap <Leader>ev :e $MYVIMRC<CR>
 " nnoremap <Leader>es :so $MYVIMRC<CR>
-nnoremap <leader>b  :nohlsearch<CR>
+nnoremap <leader>l  :nohlsearch<CR>
 " nnoremap <Leader>=  :wincmd =<CR>
 nnoremap <Leader>c  :let @+=expand('%:p')<CR>
 
@@ -392,16 +405,18 @@ nnoremap <Leader>c  :let @+=expand('%:p')<CR>
 " map C-j in all modes to save buffer
 noremap  <C-j>      :w<CR>
 noremap! <C-j> <ESC>:w<CR>
-noremap  <Leader>w  :w<CR>
+noremap  <Leader>j  :w<CR>
+
 
 vnoremap <C-r> "hy:%sno#<C-r>h##gc<left><left><left>
 nnoremap S     :%sno##g<LEFT><LEFT>
 inoremap <C-y> <C-r>"
 
-nnoremap m <C-d>
-nnoremap , <C-u>
-nnoremap ; zz
-nnoremap ' zt<C-y>
+nnoremap ;  <C-d>
+nnoremap '  <C-u>
+nnoremap \  zz
+" nnoremap ; zz
+" nnoremap ' zt<C-y>
 
 vnoremap // y/<C-R>"<CR>"
 
