@@ -415,14 +415,14 @@ inoremap <C-y> <C-r>"
 nnoremap ;  <C-d>
 nnoremap '  <C-u>
 nnoremap \  zz
+nnoremap \|  zt
 " nnoremap ; zz
 " nnoremap ' zt<C-y>
 
 vnoremap // y/<C-R>"<CR>"
 
-vnoremap p     "_dp
-vnoremap <C-p> "_dP
-nnoremap <C-p> P
+vnoremap p "_dp
+vnoremap P "_dP
 
 
 nnoremap th  :tabfirst<CR>
