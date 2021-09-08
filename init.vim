@@ -374,9 +374,11 @@ let g:vim_json_syntax_conceal = 0
 """""""""""""""""""""""""""""""""""""""
 
 nnoremap J mzJ`z
-noremap  gh ^
+noremap  gh 0
+noremap  gs ^
 noremap  gl $
-vnoremap gh ^
+vnoremap gh 0
+vnoremap gs ^
 vnoremap gl g_
 
 nnoremap <C-m> %
