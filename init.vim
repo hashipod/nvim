@@ -139,9 +139,9 @@ autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
 
 
 
-nnoremap <leader>p yiw :CtrlSF "<C-R>""
-nnoremap <leader>o :CtrlSFOpen <CR>
-" nnoremap <Leader>j yiw :CtrlSF "<C-R>""<CR>
+nnoremap <leader>o :CtrlSF
+nnoremap <leader>O :CtrlSFOpen <CR>
+nnoremap <Leader>p yiw :CtrlSF "<C-R>""<CR>
 vnoremap <Leader>p y<ESC> :CtrlSF "<C-R>""
 let g:ctrlsf_auto_focus = { "at": "start" }
 let g:ctrlsf_search_mode = 'async'
@@ -347,7 +347,7 @@ autocmd FileType vista,NvimTree noremap <buffer> <c-l> <nop>
 autocmd FileType vista,NvimTree noremap <buffer> <Leader>L <nop>
 autocmd FileType vista,NvimTree noremap <buffer> <Leader>q <nop>
 autocmd FileType vista,NvimTree noremap <buffer> <Leader>x <nop>
-autocmd FileType vista,NvimTree noremap <buffer> <Leader>w <nop>
+autocmd FileType vista,NvimTree noremap <buffer> <Leader>j <nop>
 
 
 
@@ -374,12 +374,12 @@ let g:vim_json_syntax_conceal = 0
 """""""""""""""""""""""""""""""""""""""
 
 nnoremap J mzJ`z
-noremap  gh 0
-noremap  gs ^
-noremap  gl $
-vnoremap gh 0
-vnoremap gs ^
-vnoremap gl g_
+" noremap  H 0
+noremap  H ^
+noremap  L $
+" vnoremap H 0
+vnoremap H ^
+vnoremap L g_
 
 nnoremap <C-m> %
 vnoremap <C-m> %
@@ -505,12 +505,12 @@ if has("termguicolors")
     set termguicolors
 endif
 " colorscheme space-vim-dark
-" colorscheme bogster
+colorscheme bogster
 
-let g:tokyonight_style = "night"
-let g:tokyonight_italic_functions = 1
-let g:tokyonight_sidebars = [ "qf", "vista_kind", "terminal", "packer" ]
-colorscheme tokyonight
+" let g:tokyonight_style = "night"
+" let g:tokyonight_italic_functions = 1
+" let g:tokyonight_sidebars = [ "qf", "vista_kind", "terminal", "packer" ]
+" colorscheme tokyonight
 
 
 
