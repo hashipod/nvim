@@ -99,6 +99,9 @@ let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
 let $FZF_DEFAULT_OPTS=" --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
 
 
+lua << EOF
+    require'nvim-tree'.setup {}
+EOF
 
 nnoremap <Leader>n :NvimTreeToggle<CR>
 nnoremap <leader>r :NvimTreeRefresh<CR>
