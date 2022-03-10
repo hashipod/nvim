@@ -12,7 +12,7 @@ Plug 'kyazdani42/nvim-web-devicons'
 Plug 'kyazdani42/nvim-tree.lua'
 
 Plug 'neovim/nvim-lspconfig'
-Plug 'folke/trouble.nvim'
+" Plug 'folke/trouble.nvim'
 Plug 'kevinhwang91/nvim-bqf'
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -257,15 +257,15 @@ EOF
 
 
 
-lua << EOF
-  require("trouble").setup {}
-EOF
-nnoremap <leader>exx <cmd>TroubleToggle<cr>
-nnoremap <leader>exw <cmd>TroubleToggle lsp_workspace_diagnostics<cr>
-nnoremap <leader>exd <cmd>TroubleToggle lsp_document_diagnostics<cr>
-nnoremap <leader>exq <cmd>TroubleToggle quickfix<cr>
-nnoremap <leader>exl <cmd>TroubleToggle loclist<cr>
-nnoremap gR <cmd>TroubleToggle lsp_references<cr>
+" lua << EOF
+"   require("trouble").setup {}
+" EOF
+" nnoremap <leader>exx <cmd>TroubleToggle<cr>
+" nnoremap <leader>exw <cmd>TroubleToggle lsp_workspace_diagnostics<cr>
+" nnoremap <leader>exd <cmd>TroubleToggle lsp_document_diagnostics<cr>
+" nnoremap <leader>exq <cmd>TroubleToggle quickfix<cr>
+" nnoremap <leader>exl <cmd>TroubleToggle loclist<cr>
+" nnoremap gR <cmd>TroubleToggle lsp_references<cr>
 
 
 
